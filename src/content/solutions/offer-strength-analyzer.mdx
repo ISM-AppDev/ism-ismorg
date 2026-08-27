@@ -13,6 +13,7 @@ updated: 2026-08-27
 ---
 
 import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
 
@@ -52,6 +53,8 @@ a service that "should" sell isn't. Also useful before a launch, as a last gut-c
    offers, then returns prioritized issues + fixes and an overall read (strong / mixed / weak).
 4. Results are stored as an `offer_analysis` so the Lead Magnet Opportunity Finder and the
    Intelligence Brief can build on them ("your core offer's weak point is proof").
+
+<TeamOnly>
 
 ## Why it is worth building
 
@@ -113,3 +116,5 @@ offer's analysis history so the owner can see whether edits actually helped.
     <div class="btnrow"><span>Compare to “Full Rebuild”</span><span>Save analysis</span></div>
   </div>
 </Prototype>
+
+</TeamOnly>

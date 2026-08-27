@@ -29,10 +29,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <header class="idea__head">
       <div class="idea__head-top">
-        <span class="t-label t-muted">No.&nbsp;{num}</span>
+        <span class="t-label t-crimson">No.&nbsp;{num}</span>
         <StatusBadge status={data.status} />
       </div>
-      <h1 class="t-display-l">{data.title}</h1>
+      <h1 class="t-display-l idea__title">{data.title}</h1>
       <p class="t-body-l t-muted idea__tagline">{data.one_liner}</p>
       <div class="idea__vote">
         <VoteButton slug={entry.slug} variant="detail" />
@@ -64,6 +64,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <style>
     .back { display: inline-block; margin-bottom: var(--ism-space-4); }
     .back:hover { color: var(--ism-action); }
+    .idea__title { color: var(--ism-action); }
     .idea__head { margin-bottom: var(--ism-space-4); }
     .idea__head-top {
       display: flex; align-items: center; gap: var(--ism-space-2);

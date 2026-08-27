@@ -13,6 +13,7 @@ updated: 2026-08-27
 ---
 
 import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
 
@@ -53,6 +54,8 @@ the paid offer is solid and now needs feeders.
    offer. The owner marks ones as "building" or dismisses them.
 4. Chosen opportunities are stored as `lead_magnet_recommendations`; the Intelligence Brief
    can later nudge ("you flagged the pricing calculator three weeks ago — still worth it?").
+
+<TeamOnly>
 
 ## Why it is worth building
 
@@ -118,3 +121,5 @@ produces the first version of the asset.
     <div class="btnrow"><span>Mark #1 building</span><span>Dismiss</span></div>
   </div>
 </Prototype>
+
+</TeamOnly>

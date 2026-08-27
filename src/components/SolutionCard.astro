@@ -21,7 +21,7 @@ const num = String(data.number).padStart(2, '0');
 >
   <a class="card__link" href={href}>
     <div class="card__top">
-      <span class="t-label t-muted">No.&nbsp;{num}</span>
+      <span class="t-label card__num">No.&nbsp;{num}</span>
       <StatusBadge status={data.status} />
     </div>
     <h3 class="card__title t-subhead">{data.title}</h3>
@@ -44,8 +44,13 @@ const num = String(data.number).padStart(2, '0');
     border: var(--ism-rule) solid var(--ism-border);
     background: var(--ism-bg);
     height: 100%;
+    transition: box-shadow 0.16s ease, transform 0.16s ease, border-color 0.16s ease;
   }
-  .card:hover { border-color: var(--ism-text); }
+  .card:hover {
+    border-color: var(--ism-crimson-300);
+    box-shadow: var(--ism-shadow);
+    transform: translateY(-3px);
+  }
   .card__link { display: block; padding: var(--ism-space-3); flex: 1; }
   .card__top {
     display: flex;
@@ -54,8 +59,9 @@ const num = String(data.number).padStart(2, '0');
     gap: var(--ism-space-2);
     margin-bottom: var(--ism-space-2);
   }
-  .card__title { margin-bottom: 8px; }
-  .card__link:hover .card__title { color: var(--ism-action); }
+  .card__num { color: var(--ism-action); }
+  .card__title { margin-bottom: 8px; color: var(--ism-action); }
+  .card__link:hover .card__title { color: var(--ism-action-hover); }
   .card__oneliner { margin: 0; }
   .card__foot {
     display: flex;

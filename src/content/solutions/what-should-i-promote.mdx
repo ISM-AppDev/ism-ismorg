@@ -13,6 +13,7 @@ updated: 2026-08-27
 ---
 
 import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
 
@@ -51,6 +52,8 @@ Best used monthly, or whenever a launch window opens.
    and goal alignment, then recommends one (or two) with reasoning.
 5. The recommendation is stored as a `promotion_recommendation`; the Intelligence Brief can
    carry it forward and check whether the owner acted.
+
+<TeamOnly>
 
 ## Why it is worth building
 
@@ -109,3 +112,5 @@ running — deprioritize it?").
     <div class="btnrow"><span>Use this</span><span>Pick a different offer</span></div>
   </div>
 </Prototype>
+
+</TeamOnly>

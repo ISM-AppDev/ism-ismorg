@@ -13,6 +13,7 @@ updated: 2026-08-27
 ---
 
 import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
 
@@ -59,6 +60,8 @@ pass on a client draft.
    strengths and weaknesses with concrete rewrites for the weak spots.
 5. Each run is stored so later tools (and the Intelligence Brief) can reference "you tested
    this message on 12 Aug and the weak point was the CTA."
+
+<TeamOnly>
 
 ## Why it is worth building
 
@@ -125,3 +128,5 @@ Optional: score trend over time so the owner can see their copy improving.
     <div class="btnrow"><span>See rewritten version</span><span>Save analysis</span></div>
   </div>
 </Prototype>
+
+</TeamOnly>

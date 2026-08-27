@@ -12,26 +12,26 @@ const present = new Set(items.map((i) => i.data.category));
 const categories = CATEGORIES.filter((c) => present.has(c));
 ---
 <Base title="Solution Ideas" crumbs={['Catalog']}>
-  <section class="section--tight container">
-    <p class="t-label t-crimson hero__kicker">Internal</p>
-    <h1 class="t-display-2xl hero__title">Solution&nbsp;Ideas</h1>
-    <p class="t-body-l hero__blurb">
-      A working catalog of applications Impact System Marketing could build — most of them
-      aimed at small-business owners. Each idea has a one-page brief: the problem, how it
-      works, what it would take to build in phases, and a prototype of what the user
-      would actually see. Vote on the ones worth pursuing.
-    </p>
+  <div class="band">
+    <section class="section--tight container">
+      <p class="t-label t-crimson hero__kicker">Internal</p>
+      <h1 class="t-display-2xl hero__title">Solution&nbsp;Ideas</h1>
+      <p class="t-body-l hero__blurb">
+        A working catalog of applications Impact System Marketing could build — most of them
+        aimed at small-business owners. Each idea has a one-page brief: the problem, how it
+        works, what it would take to build in phases, and a prototype of what the user
+        would actually see. Vote on the ones worth pursuing.
+      </p>
 
-    <dl class="stats">
-      <div><dt class="t-display-l">{totals.total}</dt><dd class="t-label t-muted">ideas</dd></div>
-      <div><dt class="t-display-l">{totals.live}</dt><dd class="t-label t-muted">live</dd></div>
-      <div><dt class="t-display-l">{totals.building}</dt><dd class="t-label t-muted">building</dd></div>
-      <div><dt class="t-display-l">{totals.prototyping}</dt><dd class="t-label t-muted">prototyped</dd></div>
-      <div><dt class="t-display-l">{totals.idea}</dt><dd class="t-label t-muted">early</dd></div>
-    </dl>
-  </section>
-
-  <hr class="rule container-rule" />
+      <dl class="stats">
+        <div><dt class="t-display-l">{totals.total}</dt><dd class="t-label t-muted">ideas</dd></div>
+        <div><dt class="t-display-l">{totals.live}</dt><dd class="t-label t-muted">live</dd></div>
+        <div><dt class="t-display-l">{totals.building}</dt><dd class="t-label t-muted">building</dd></div>
+        <div><dt class="t-display-l">{totals.prototyping}</dt><dd class="t-label t-muted">prototyped</dd></div>
+        <div><dt class="t-display-l">{totals.idea}</dt><dd class="t-label t-muted">early</dd></div>
+      </dl>
+    </section>
+  </div>
 
   <section class="section--tight container" data-catalog>
     <div class="controls">

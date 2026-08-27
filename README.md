@@ -57,6 +57,7 @@ updated: 2026-08-27
 ---
 
 import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
 ...
@@ -66,6 +67,9 @@ import Prototype from '../../components/Prototype.astro';
 ...
 ## How it works
 ...
+
+<TeamOnly>
+
 ## Why it is worth building
 ...
 ## Build phases
@@ -83,7 +87,21 @@ import Prototype from '../../components/Prototype.astro';
     <div class="row"><span>Label</span><span>Value</span></div>
   </div>
 </Prototype>
+
+</TeamOnly>
 ```
+
+### Two levels of gating
+
+| Lever | Effect |
+|---|---|
+| `visibility: internal` in frontmatter | the **whole idea** is dropped from a `PUBLIC_BUILD=1` build (card and page) |
+| `<TeamOnly>…</TeamOnly>` around sections | those **sections** are dropped from a public build; a "sign in to see the rest" note shows instead. In the private build they render with an "Internal" marker. |
+
+Convention for the seed ideas: the card + everything through **How it works** is the public
+pitch people vote on; **Why it is worth building** onward (phases, stack, risks, prototype)
+is wrapped in `<TeamOnly>`. Keep blank lines around the `<TeamOnly>` tags so the markdown
+inside still renders.
 
 The `.mock` helper classes (`.row`, `.score`, `.btnrow`, `h4`/`h5`, `.tagline`) are styled
 in `src/components/Prototype.astro` — enough to fake an email, a dashboard panel, or a
@@ -143,8 +161,22 @@ cd /opt/ismorg-solutions && git pull && ./deploy/deploy.sh
 
 ## Making it public later
 
-1. Rebuild with `PUBLIC_BUILD=1 ./deploy/deploy.sh` to drop `visibility: internal` ideas.
-2. Remove the `auth_basic` lines from the three `/solutions` blocks in the nginx vhost,
-   `nginx -t && systemctl reload nginx`.
-3. Drop `public/robots.txt` to `Allow`, and remove the `noindex` meta in
-   `src/layouts/Base.astro` if search visibility is wanted.
+The intended public shape is a **teaser**: anyone can see each idea's pitch (card +
+problem / what it does / who it's for / how it works) and vote; the build internals stay
+private. Mechanism:
+
+1. For each idea you want publicly listed, set `visibility: public` in its frontmatter.
+   Its `<TeamOnly>` sections still won't render in the public build.
+2. Build the public bundle: `PUBLIC_BUILD=1 npm run build`.
+3. Serve two bundles:
+   - **public** bundle at `/solutions/` — remove the `auth_basic` lines from the
+     `/solutions/` and `/solutions/_astro/` blocks (keep them on `/solutions/api/` or not,
+     your call), `nginx -t && systemctl reload nginx`.
+   - **full** bundle (normal `npm run build`, everything visible) published to
+     `/var/www/ismorg.com/solutions-full/` with a matching `location /solutions-full/`
+     block that keeps `auth_basic`. That's your logged-in view of the complete pages.
+4. Loosen `public/robots.txt` and drop the `noindex` meta in `src/layouts/Base.astro` only
+   if you want search engines to index the public teaser.
+
+Until then everything stays behind one `auth_basic` gate and the split is only cosmetic
+(the `<TeamOnly>` marker shows what *would* be hidden).

@@ -20,11 +20,13 @@
   --ism-charcoal-900: #222020;   /* System Charcoal */
 
   /* --- semantic --- */
-  --ism-bg: #ffffff;
+  --ism-page: var(--ism-charcoal-100);   /* tinted paper the panels sit on */
+  --ism-bg: #ffffff;                     /* panels, cards */
   --ism-surface: var(--ism-charcoal-100);
   --ism-border: var(--ism-charcoal-300);
   --ism-text: #201e1d;
   --ism-text-muted: var(--ism-charcoal-500);
+  --ism-shadow: 0 10px 30px -12px rgba(32, 30, 29, 0.22);
 
   --ism-action: var(--ism-crimson-500);
   --ism-action-hover: var(--ism-crimson-700);
@@ -60,7 +62,7 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background: var(--ism-bg);
+  background: var(--ism-page);
   color: var(--ism-text);
   font-family: var(--ism-font-display);
   font-size: 1rem;
@@ -135,6 +137,35 @@ hr {
 
 .stack > * + * { margin-top: var(--ism-space-2); }
 .stack-lg > * + * { margin-top: var(--ism-space-4); }
+
+/* white band sitting on the tinted page */
+.band {
+  background: var(--ism-bg);
+  border-bottom: var(--ism-rule) solid var(--ism-text);
+}
+
+/* ------------------- internal / gated sections -------------------- */
+/* Wrapped MDX that is hidden from the public build. In the private
+   build it shows with this marker so the split is visible. */
+.team-only {
+  position: relative;
+  margin-top: var(--ism-space-6);
+  padding-left: var(--ism-space-3);
+  border-left: 4px solid var(--ism-action);
+}
+.team-only__tag {
+  color: var(--ism-action);
+  display: inline-block;
+  margin-bottom: var(--ism-space-2);
+}
+.team-only > .team-only__tag + :where(h2, h3) { margin-top: 0; border-top: 0; padding-top: 0; }
+.gate-note {
+  margin-top: var(--ism-space-6);
+  padding: var(--ism-space-3);
+  background: var(--ism-crimson-100);
+  border: var(--ism-rule) solid var(--ism-crimson-300);
+  font-size: 1rem;
+}
 
 /* ----------------------------- rule -------------------------------- */
 .rule {
