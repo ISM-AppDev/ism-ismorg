@@ -44,6 +44,9 @@ server {
 
         auth_basic           "Solution Ideas";
         auth_basic_user_file /etc/nginx/.htpasswd-solutions;
+
+        # authed HTML — keep Cloudflare and browsers from caching it
+        add_header Cache-Control "no-store" always;
     }
 
     # content-hashed assets: cache hard
