@@ -32,7 +32,7 @@ echo "==> vote service data dir"
 mkdir -p "$DATA_DIR"
 chown www-data:www-data "$DATA_DIR"
 
-if systemctl list-unit-files | grep -q '^ismorg-solutions-votes\.service'; then
+if systemctl cat ismorg-solutions-votes.service >/dev/null 2>&1; then
   echo "==> restart vote service"
   systemctl restart ismorg-solutions-votes
   sleep 1
