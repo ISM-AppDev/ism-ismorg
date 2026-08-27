@@ -1,7 +1,7 @@
 ---
 title: Scheduled Posts
 number: 7
-one_liner: Posts written in the owner's voice on a set schedule, built from what the system already knows about them and their industry, delivered to approve or published automatically.
+one_liner: Posts written in the owner's voice from what the system knows about them and their industry — approve each one, place it on a calendar, and publish on schedule or automatically.
 status: exploring
 category: Brand & Visibility
 tags: [content, linkedin, scheduling, voice, ai, automation]
@@ -28,11 +28,16 @@ still dies.
 A standing queue of posts, drafted ahead of time in the owner's voice, on a cadence they
 set. Each draft is built from the shared business profile — their positioning, offers,
 audience, past posts, current priorities — so it sounds like them and points somewhere
-useful. The owner reviews the queue, edits or regenerates anything weak, and either
-approves each post or lets approved ones publish on schedule.
+useful. The owner reviews the queue and edits or regenerates anything weak.
 
-The unit of value is the **filled queue**: at any moment there are two or three weeks of
-drafts ready, so "what do I post today" is never a question again.
+Approving a post isn't the end of it: the owner then **schedules it** — onto the next open
+cadence slot or a specific date and time they pick — and a **calendar** shows the whole
+month at a glance: what's already scheduled, what's published, and which slots are still
+open. From there each post either publishes automatically or comes back as a one-click
+"approve and post" at its slot time.
+
+The unit of value is the **filled calendar**: at any moment there are two or three weeks of
+scheduled posts, so "what do I post today" is never a question again.
 
 ## Who it is for
 
@@ -48,9 +53,12 @@ rebuilding a dormant profile who needs momentum without a content sprint.
    offer vs opinion.
 3. A generation pass fills the queue two to three weeks out. Each draft carries its source
    angle ("this one leans on your case-study library") and a confidence note.
-4. The owner works the queue: approve, edit inline, regenerate with a nudge, or reorder.
-5. Approved posts publish on schedule (Phase 3) or arrive by email to approve with one
-   click. Published posts feed back so the voice model keeps tightening.
+4. The owner works the queue: approve, edit inline, regenerate with a nudge. Each approved
+   post is placed on the schedule — the next open cadence slot, or a custom date and time —
+   and appears on a calendar next to everything already scheduled and published. Slots can
+   be dragged to reschedule.
+5. At its slot the post publishes automatically (Phase 3) or the owner gets a one-click
+   "approve and post" email. Published posts feed back so the voice model keeps tightening.
 
 Inspired by the "Scheduled Posts" pattern in the evyus workflow catalog — the retention
 idea being that something useful shows up on a schedule and asks you to finish it before it
@@ -71,14 +79,17 @@ sends more.
 
 ## Build phases
 
-### Phase 1 — Draft queue
+### Phase 1 — Draft queue + calendar
 Pull voice + positioning + offers from the profile, ingest recent posts, generate a rolling
-queue of drafts with a simple mix control. Owner approves/edits/regenerates and copies out
-manually. Store drafts and decisions.
+queue of drafts with a simple mix control. Owner approves / edits / regenerates, then
+assigns each approved post a date and time and sees a calendar of what's scheduled /
+published / open. Posting is still manual at this stage (copy out at the slot, or a
+reminder fires). Store drafts, schedule, and decisions.
 
-### Phase 2 — Cadence and calendar
-Real schedule, a calendar view, auto-refill when the queue runs low, reorder, "more like
-this / less like this" feedback. Accept drafts pushed in from other tools.
+### Phase 2 — Cadence automation and feedback
+Recurring cadence slots that auto-fill from the queue, auto-refill when queue depth runs
+low, drag-to-reschedule on the calendar, "more like this / less like this" feedback. Accept
+drafts pushed in from other tools (Daily Newsjack, repurposing, FAQ-to-post).
 
 ### Phase 3 — Publish and learn
 Direct scheduled publishing to LinkedIn (+ approve-by-email). Pull post performance back in;
@@ -90,7 +101,8 @@ losing the queue.
 - SOTS Connect shell, auth, entitlement gate, shared profile (voice, positioning, offers, priorities)
 - Past-post ingestion + a stored voice profile (shared with other content tools)
 - Anthropic API for drafting; structured drafts with angle + confidence metadata
-- `scheduled_posts` table: draft, status (queued / approved / published / skipped), scheduled_at, source angle, performance
+- `scheduled_posts` table: draft, status (drafted / approved / scheduled / published / skipped), scheduled_at, cadence_slot_id, source angle, performance — the calendar view reads from this
+- `cadence_slots` table: recurring day/time rules the queue auto-fills (Phase 2)
 - Scheduler / job runner (shared); LinkedIn API + OAuth (Phase 3); email approve-by-reply (Resend)
 
 ## Open questions and risks
@@ -101,23 +113,32 @@ losing the queue.
   is opt-in per slot, not a global switch.
 - **Queue staleness.** A draft written three weeks ago can be overtaken by events — need a
   "still fresh?" check before it publishes.
+- **Scheduling correctness.** Owner timezone, DST, "best time to post" defaults, and two
+  posts landing in the same slot are all small things that erode trust in the calendar if
+  they're wrong.
 - **Channel scope.** LinkedIn first. X, Facebook, Threads, Bluesky each add API and format
   work; don't promise them in Phase 1.
 - **Overlap with Daily Newsjack.** Keep this the *queue and publishing* layer; Newsjack is
   one of several *sources* that feed it.
 
-<Prototype label="This week's queue" caption="Sample — three drafts scheduled, owner working the list.">
+<Prototype label="Calendar + queue" caption="Sample — the month view, then the owner working the next few slots.">
   <div class="mock">
-    <h4>Scheduled Posts — week of Mar 10</h4>
-    <p class="tagline">Cadence: Tue / Thu 8:00am · Queue depth: 16 days · Mix: 40% teaching, 30% story, 20% opinion, 10% offer</p>
+    <h4>Scheduled Posts — March</h4>
+    <p class="tagline">Cadence: Tue / Thu 8:00am · 6 of 8 March slots filled · queue depth 16 days · Mix: 40% teaching, 30% story, 20% opinion, 10% offer</p>
+    <h5>Month at a glance</h5>
+    <div class="row"><span>Tue 4 <strong>✓ published</strong></span><span>Thu 6 <strong>✓ published</strong></span></div>
+    <div class="row"><span>Tue 11 <strong>● scheduled</strong> — Teaching</span><span>Thu 13 <strong>● scheduled</strong> — Story</span></div>
+    <div class="row"><span>Tue 18 <strong>● scheduled</strong> — Opinion</span><span>Thu 20 <strong>○ open slot</strong></span></div>
+    <div class="row"><span>Tue 25 <strong>○ open slot</strong></span><span>Thu 27 <strong>● scheduled</strong> — Offer</span></div>
 
-    <div class="row"><span><strong>Tue Mar 11 · 8:00am</strong> — Teaching</span><span>Approved ✓</span></div>
+    <h5>Working the queue</h5>
+    <div class="row"><span><strong>Tue Mar 11 · 8:00am</strong> — Teaching</span><span>Approved ✓ · scheduled</span></div>
     <p>“Most onboarding decks fail for one boring reason: they explain the product before the customer has said what they're trying to do. Here's the two-question fix we run on week one…”</p>
     <div class="btnrow"><span>Edit</span><span>Regenerate</span><span>Unschedule</span></div>
 
     <div class="row"><span><strong>Thu Mar 13 · 8:00am</strong> — Story</span><span>Needs review</span></div>
     <p>“A client almost fired us in month two. The work was fine — the reporting wasn't. What we changed…” <em>(draws on your case-study library)</em></p>
-    <div class="btnrow"><span>Approve</span><span>Edit</span><span>Regenerate</span></div>
+    <div class="btnrow"><span>Approve &amp; schedule</span><span>Pick another time</span><span>Edit</span><span>Regenerate</span></div>
 
     <div class="row"><span><strong>Tue Mar 18 · 8:00am</strong> — Opinion</span><span>Draft</span></div>
     <p class="tagline">“‘Post daily’ is bad advice for most B2B founders. Here's what to do instead.” — hook only, body pending</p>
