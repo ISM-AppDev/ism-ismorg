@@ -1,0 +1,128 @@
+---
+title: Scheduled Posts
+number: 7
+one_liner: Posts written in the owner's voice on a set schedule, built from what the system already knows about them and their industry, delivered to approve or published automatically.
+status: exploring
+category: Brand & Visibility
+tags: [content, linkedin, scheduling, voice, ai, automation]
+effort: M
+target_user: Owners and professionals who need a consistent presence but never find time to write
+visibility: internal
+created: 2026-08-27
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Consistency beats brilliance on social, and almost nobody is consistent. Owners know they
+should post a few times a week, start strong, and fall off inside a month because every
+post is a blank-page decision made at the wrong time of day. Generic AI post generators
+don't fix it — they produce off-voice filler that the owner won't publish, so the habit
+still dies.
+
+## What it does
+
+A standing queue of posts, drafted ahead of time in the owner's voice, on a cadence they
+set. Each draft is built from the shared business profile — their positioning, offers,
+audience, past posts, current priorities — so it sounds like them and points somewhere
+useful. The owner reviews the queue, edits or regenerates anything weak, and either
+approves each post or lets approved ones publish on schedule.
+
+The unit of value is the **filled queue**: at any moment there are two or three weeks of
+drafts ready, so "what do I post today" is never a question again.
+
+## Who it is for
+
+Solo owners, consultants, and small teams who want to show up regularly on LinkedIn (and
+later other channels) without it becoming a daily writing job. Also a fit for someone
+rebuilding a dormant profile who needs momentum without a content sprint.
+
+## How it works
+
+1. Ships as a tool in SOTS Connect, using shared auth and the shared business profile. On
+   first run it ingests the owner's recent posts to learn cadence, structure, and voice.
+2. The owner sets a schedule (e.g. Tue/Thu 8am) and a rough mix — how much teaching vs story vs
+   offer vs opinion.
+3. A generation pass fills the queue two to three weeks out. Each draft carries its source
+   angle ("this one leans on your case-study library") and a confidence note.
+4. The owner works the queue: approve, edit inline, regenerate with a nudge, or reorder.
+5. Approved posts publish on schedule (Phase 3) or arrive by email to approve with one
+   click. Published posts feed back so the voice model keeps tightening.
+
+Inspired by the "Scheduled Posts" pattern in the evyus workflow catalog — the retention
+idea being that something useful shows up on a schedule and asks you to finish it before it
+sends more.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- It is the backbone content habit. Almost every other Brand & Visibility idea here
+  (Daily Newsjack, repurposing, FAQ-to-post) can drop its output *into this queue* rather
+  than reinventing review-and-publish.
+- The filled-queue mechanic is sticky: the owner accumulates weeks of scheduled value they
+  would lose by leaving.
+- Voice fidelity from the profile + past-post ingestion is the moat. A cold generic tool
+  can't match it, and the owner feels the difference immediately.
+- Natural upsell path: base = draft queue you copy out; upgrade = auto-publish + analytics.
+
+## Build phases
+
+### Phase 1 — Draft queue
+Pull voice + positioning + offers from the profile, ingest recent posts, generate a rolling
+queue of drafts with a simple mix control. Owner approves/edits/regenerates and copies out
+manually. Store drafts and decisions.
+
+### Phase 2 — Cadence and calendar
+Real schedule, a calendar view, auto-refill when the queue runs low, reorder, "more like
+this / less like this" feedback. Accept drafts pushed in from other tools.
+
+### Phase 3 — Publish and learn
+Direct scheduled publishing to LinkedIn (+ approve-by-email). Pull post performance back in;
+tune the voice model and the content mix from what actually landed. Pause/resume without
+losing the queue.
+
+## Stack and dependencies
+
+- SOTS Connect shell, auth, entitlement gate, shared profile (voice, positioning, offers, priorities)
+- Past-post ingestion + a stored voice profile (shared with other content tools)
+- Anthropic API for drafting; structured drafts with angle + confidence metadata
+- `scheduled_posts` table: draft, status (queued / approved / published / skipped), scheduled_at, source angle, performance
+- Scheduler / job runner (shared); LinkedIn API + OAuth (Phase 3); email approve-by-reply (Resend)
+
+## Open questions and risks
+
+- **Voice drift.** Regeneration and edits have to feed back or the queue slowly stops
+  sounding like the owner.
+- **Auto-publish trust.** Most owners will want approve-first for a long time; auto-publish
+  is opt-in per slot, not a global switch.
+- **Queue staleness.** A draft written three weeks ago can be overtaken by events — need a
+  "still fresh?" check before it publishes.
+- **Channel scope.** LinkedIn first. X, Facebook, Threads, Bluesky each add API and format
+  work; don't promise them in Phase 1.
+- **Overlap with Daily Newsjack.** Keep this the *queue and publishing* layer; Newsjack is
+  one of several *sources* that feed it.
+
+<Prototype label="This week's queue" caption="Sample — three drafts scheduled, owner working the list.">
+  <div class="mock">
+    <h4>Scheduled Posts — week of Mar 10</h4>
+    <p class="tagline">Cadence: Tue / Thu 8:00am · Queue depth: 16 days · Mix: 40% teaching, 30% story, 20% opinion, 10% offer</p>
+
+    <div class="row"><span><strong>Tue Mar 11 · 8:00am</strong> — Teaching</span><span>Approved ✓</span></div>
+    <p>“Most onboarding decks fail for one boring reason: they explain the product before the customer has said what they're trying to do. Here's the two-question fix we run on week one…”</p>
+    <div class="btnrow"><span>Edit</span><span>Regenerate</span><span>Unschedule</span></div>
+
+    <div class="row"><span><strong>Thu Mar 13 · 8:00am</strong> — Story</span><span>Needs review</span></div>
+    <p>“A client almost fired us in month two. The work was fine — the reporting wasn't. What we changed…” <em>(draws on your case-study library)</em></p>
+    <div class="btnrow"><span>Approve</span><span>Edit</span><span>Regenerate</span></div>
+
+    <div class="row"><span><strong>Tue Mar 18 · 8:00am</strong> — Opinion</span><span>Draft</span></div>
+    <p class="tagline">“‘Post daily’ is bad advice for most B2B founders. Here's what to do instead.” — hook only, body pending</p>
+    <div class="btnrow"><span>Generate body</span><span>Skip this slot</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>

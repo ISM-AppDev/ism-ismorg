@@ -1,0 +1,144 @@
+---
+title: Daily Newsjack
+number: 8
+one_liner: Every morning it reads the news in the categories the owner cares about, picks the few stories their audience will care about, and drafts posts and article outlines with the angle spelled out.
+status: spark
+category: Brand & Visibility
+tags: [content, news, linkedin, trends, research, ai, automation]
+effort: L
+target_user: Owners and thought-leaders who want to ride relevant news without living in a feed reader
+visibility: internal
+created: 2026-08-27
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Reacting to news is one of the most reliable ways to get reach, and it is almost impossible
+to do on a schedule. By the time an owner notices a relevant story, reads it, works out an
+angle that fits their audience, and writes something, the moment has passed — or they just
+never see the story because they are not sitting in a feed all day. Trend-research sites
+help with discovery but stop there: no filter for *this* business, no drafts, no follow-through.
+
+## What it does
+
+A daily pass over the news, narrowed to the owner's world and turned into usable drafts:
+
+- The owner sets their **industry**, the **news categories** to watch, and the **topics
+  and keywords their audience cares about** (plus sources to trust or mute).
+- Each morning the system scans current stories in those categories, clusters duplicates,
+  and **ranks them by relevance to the stored audience** and by how much angle potential
+  they have.
+- For the top handful it produces: a plain-English "why this matters to your audience," two
+  or three angles, and **multiple drafted posts** — a LinkedIn post, a LinkedIn article
+  outline, a short-form take — with suggested hashtags.
+- The owner skims, picks the ones worth using, edits, and sends them on — later, straight
+  into the Scheduled Posts queue or out to LinkedIn.
+
+The bar is: open it with coffee, leave five minutes later with two posts worth publishing.
+
+## Who it is for
+
+Consultants, founders, and executives building authority in a specific lane who know
+newsjacking works but can't sustain the daily discovery-to-draft loop by hand. Strong fit
+alongside Scheduled Posts, which gives the drafts somewhere to land.
+
+## How it works
+
+1. A SOTS Connect tool using shared auth and the shared business profile. Setup captures
+   industry, watched categories, audience keywords, tone, sources, and how many drafts per
+   day the owner wants.
+2. A scheduled morning job ingests stories from news feeds and APIs for the watched
+   categories, deduplicates and clusters near-identical coverage, and attaches source
+   metadata and timestamps.
+3. A relevance pass scores each cluster against the stored audience, keywords, and the
+   owner's positioning; low scorers are dropped.
+4. For the survivors, the model generates the "why it matters," angles, and drafts —
+   treating the article text as untrusted input, never as instructions.
+5. The owner reviews the daily set: use, edit, "more like this," or dismiss. Chosen drafts
+   go to Scheduled Posts or straight out (Phase 3). Decisions train the relevance filter.
+
+Modeled on what a tool like *NewsJacking Daily* surfaces — trending topics with hooks,
+ready-to-post drafts, and per-platform prompts — but filtered to one business and wired
+through to review and publishing rather than left as a public research library.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- It is a high-reach content source that no competitor tool personalizes. Generic trend
+  feeds give everyone the same angles; this one is scored against the owner's audience.
+- It compounds with the rest of the Brand & Visibility set: Newsjack produces drafts,
+  Scheduled Posts queues and publishes them, Message Market-Fit Checker can pre-flight the
+  risky ones.
+- The relevance filter improving from the owner's use/dismiss history is a moat and a
+  retention hook — it gets visibly better, and leaving resets it.
+- Clear tiering: base = a daily list you copy from; upgrade = auto-drafting into the queue,
+  breaking-story alerts, and scheduled publishing.
+
+## Build phases
+
+### Phase 1 — Daily relevant list
+Category + keyword setup. Once-daily job: pull stories, cluster, score against the audience,
+show the top 5 with "why it matters" and **one** drafted LinkedIn post each. Manual copy-out.
+Store stories, drafts, and use/dismiss decisions.
+
+### Phase 2 — Formats, tuning, and hand-off
+Multiple formats per story (post, article outline, short-form). Tone control. Source
+allow/mute list. "More like this / less like this" feeding the relevance model. Push a
+chosen draft into the Scheduled Posts queue.
+
+### Phase 3 — Alerts and publishing
+Off-cycle "breaking" alerts for stories that clear a high relevance bar before the next
+daily run. Scheduled/direct publishing to LinkedIn. Performance feedback → learn which
+topics and angles land. Brand-safety filter that suppresses tragedy/disaster stories and
+flags sensitive ones for manual review.
+
+## Stack and dependencies
+
+- SOTS Connect shell, auth, entitlement gate, shared profile (audience, keywords, positioning, tone)
+- News ingestion: RSS + a news API (licensing and coverage matter — see risks); dedup / clustering
+- Relevance scoring against stored audience + keywords; stored feedback loop
+- Anthropic API for "why it matters," angles, and drafts, with strict prompt-injection isolation of article text; fact-vs-take separation
+- `news_items`, `news_clusters`, `newsjack_drafts` tables; feedback / decisions store
+- Scheduler / job runner (shared); LinkedIn API + OAuth (Phase 3); integration with Scheduled Posts
+
+## Open questions and risks
+
+- **News data.** Free RSS is patchy; a proper news API has real cost and licensing terms
+  (and limits on storing/reproducing text). This is the biggest unknown for the build.
+- **Relevance precision.** Two junk stories in the daily five and the owner stops opening
+  it. The scoring pass has to be conservative — better to show 3 great than 5 mediocre.
+- **Brand safety.** Newsjacking a tragedy is a reputational disaster. Phase 3 needs a hard
+  suppression list plus a "sensitive — review manually" flag well before auto-publish.
+- **Timeliness.** A once-daily pass is too slow for fast-moving stories; that is what the
+  Phase 3 breaking alerts are for, but they raise the noise risk.
+- **Prompt injection.** Article pages are hostile input — the pipeline must quarantine
+  fetched text from the instruction context.
+- **Sameness.** If every user in an industry gets similar source stories, the angles have
+  to be what differentiates — lean hard on the owner's positioning, not just the headline.
+
+<Prototype label="Today's newsjack" caption="Sample morning set for a cybersecurity consultant to mid-market firms.">
+  <div class="mock">
+    <h4>Daily Newsjack — Tuesday, Mar 11</h4>
+    <p class="tagline">Watching: Cybersecurity, Regulation, SMB Technology · Audience keywords: MSP, compliance, ransomware, cyber insurance · 2 of 4 stories shown</p>
+
+    <h5>Story 1 · relevance 94</h5>
+    <div class="row"><span><strong>New SEC cyber-disclosure rule extended to companies under $250M revenue</strong></span><span>Reuters · 2h ago</span></div>
+    <p><strong>Why it matters to your audience:</strong> most of your mid-market clients assumed these rules didn't apply to them. They do now, with a 2027 deadline. This is a "get ahead of it" conversation you can own.</p>
+    <p><strong>Angle:</strong> not "the sky is falling" — "here's the 90-day plan," positioning you as the calm operator.</p>
+    <p><strong>Drafted LinkedIn post:</strong> “If you're a mid-market company that shrugged off the SEC cyber-disclosure rules in 2024 — they just landed on your desk. The good news: you have ~18 months and a clear path. Here's what I'd do in the first 90 days…”</p>
+    <div class="btnrow"><span>Use draft</span><span>Article outline</span><span>Regenerate</span><span>Dismiss</span></div>
+
+    <h5>Story 2 · relevance 88</h5>
+    <div class="row"><span><strong>Major cyber-insurance carrier adds MFA-or-no-payout clause</strong></span><span>Industry press · 6h ago</span></div>
+    <p><strong>Why it matters:</strong> your clients buy cyber insurance as a safety net. This quietly moves the goalposts, and most won't read the renewal fine print.</p>
+    <p><strong>Angle:</strong> a short checklist post — "5 things now in your policy that weren't last year."</p>
+    <div class="btnrow"><span>Use draft</span><span>More like this</span><span>Dismiss</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>
