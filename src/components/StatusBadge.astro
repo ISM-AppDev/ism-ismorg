@@ -1,0 +1,7 @@
+---
+import { STATUS_LABEL } from '../lib/solutions';
+interface Props { status: string; }
+const { status } = Astro.props;
+const label = STATUS_LABEL[status] ?? status;
+---
+<span class={`badge badge--${status}`}>{label}</span>

@@ -1,0 +1,23 @@
+[Unit]
+Description=ismorg-solutions vote service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/ismorg-solutions/service
+Environment=PORT=4310
+Environment=DATA_FILE=/var/lib/ismorg-solutions/votes.json
+ExecStart=/usr/bin/node /opt/ismorg-solutions/service/server.mjs
+Restart=on-failure
+RestartSec=2
+# hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/ismorg-solutions
+
+[Install]
+WantedBy=multi-user.target

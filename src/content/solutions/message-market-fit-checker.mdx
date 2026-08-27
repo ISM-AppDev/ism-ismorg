@@ -1,0 +1,127 @@
+---
+title: Message Market-Fit Checker
+number: 1
+one_liner: Paste in any piece of marketing copy and get a diagnostic on whether it will land with the audience you are trying to reach.
+status: prototyping
+category: Marketing & Messaging
+tags: [business-growth-advisor, sots-connect, diagnostic, copywriting, ai]
+effort: M
+target_user: Small-business owners and solo marketers writing their own copy
+visibility: internal
+created: 2026-08-25
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+
+## The problem
+
+Owners write their own emails, posts, headlines, and landing-page sections, then ship
+them on instinct. They have no cheap way to pressure-test a message before it goes out,
+and generic "make my copy better" tools rewrite the words without ever saying whether the
+underlying message actually fits the buyer. The useful question — *will this resonate with
+the people I am trying to reach?* — goes unanswered.
+
+## What it does
+
+The user pastes or types a piece of marketing copy: an email, a social post, a headline, a
+landing-page section, a webinar invitation, a networking pitch, an ad. The tool compares it
+against the audience and positioning already stored in the shared business profile and
+returns a **diagnostic**, not a rewrite:
+
+- Clarity, relevance, and specificity
+- Problem alignment — does it speak to a problem this audience actually has
+- Audience language — does it sound like the buyer or like the seller
+- Value proposition and differentiation
+- Objections it raises or fails to answer
+- Call to action
+
+It surfaces the two or three things that matter most, explains why, and recommends specific
+fixes. A revised version is offered *after* the diagnostic, as a secondary step — the
+diagnostic is the product.
+
+## Who it is for
+
+Small-business owners and one-person marketing teams who write a lot of their own copy and
+have no one to hand it to for a second opinion. Also useful for agencies doing a fast first
+pass on a client draft.
+
+## How it works
+
+1. Ships as a tool inside **Business Growth Advisor**, a sellable application within SOTS
+   Connect. It reuses SOTS Connect auth and the shared business profile — no separate login,
+   no re-entering the audience each time.
+2. On first use, if the profile is thin, it asks only for what this diagnostic needs
+   (primary audience, their top problems, the offer this copy points to) and saves those
+   answers back to the shared profile for the other tools to use.
+3. The user pastes copy and picks the format (email / post / headline / page / ad / pitch).
+4. The model runs the diagnostic against stored audience + positioning, returns prioritized
+   strengths and weaknesses with concrete rewrites for the weak spots.
+5. Each run is stored so later tools (and the Intelligence Brief) can reference "you tested
+   this message on 12 Aug and the weak point was the CTA."
+
+## Why it is worth building
+
+- It is the lowest-friction entry point of the whole Business Growth Advisor suite: paste,
+  get value in ten seconds, no setup.
+- It creates a habit loop — owners write copy constantly, so they come back constantly.
+- It feeds the rest of the system. Audience-language findings flow into Audience Pulse; a
+  weak CTA pattern across many runs is a signal for the Intelligence Brief.
+- The diagnostic framing is the differentiator. Every AI writing tool rewrites; almost none
+  tell you whether the message was right in the first place.
+
+## Build phases
+
+### Phase 1 — Standalone diagnostic
+Single input box, format selector, and a prompt that runs the diagnostic against a
+minimal audience/positioning object. Prioritized strengths/weaknesses + targeted rewrites.
+Store each run. No cross-tool wiring yet.
+
+### Phase 2 — Profile-aware
+Pull audience, positioning, offers, and objections from the shared SOTS Connect profile.
+Progressive profiling for missing fields. "Compare against a specific offer" option.
+
+### Phase 3 — Cross-tool
+Surface prior runs and their verdicts. Feed audience-language findings to Audience Pulse.
+Accept "emerging buyer language" from Audience Pulse as extra context for the diagnostic.
+Optional: score trend over time so the owner can see their copy improving.
+
+## Stack and dependencies
+
+- SOTS Connect app shell, auth, entitlement gate, shared business-profile schema
+- Anthropic API for the diagnostic; structured output so strengths/weaknesses render as data
+- `message_analyses` table: input copy, format, verdicts, recommendations, model metadata, timestamp
+- No external research required — operates entirely on user-provided copy + stored profile
+
+## Open questions and risks
+
+- **Scope creep toward a rewriter.** The revised-version feature has to stay visually
+  secondary or the diagnostic value gets lost.
+- **Profile cold-start.** First-run experience with an empty profile needs to still feel
+  sharp, not like a form.
+- **Consistency.** Two runs of similar copy should not give wildly different scores —
+  needs a fixed rubric in the prompt and some evaluation before launch.
+- **Entitlement.** Base Business Growth Advisor tool, so it must work without the
+  Intelligence upgrade.
+
+<Prototype label="Diagnostic result" caption="Sample output for a pasted LinkedIn post.">
+  <div class="mock">
+    <h4>Message Market-Fit Checker</h4>
+    <p class="tagline">Format: LinkedIn post &nbsp;·&nbsp; Compared against: “Fractional COO for $2–10M service firms”</p>
+    <div class="row"><span><strong>Overall fit</strong></span><span class="score">Weak</span></div>
+    <h5>Biggest problem</h5>
+    <p>The post talks about <em>your</em> process (“my 5-pillar system”). The buyer cares about the outcome — fewer fires, a team that runs without them. Nothing here names a problem they lie awake about.</p>
+    <h5>What is working</h5>
+    <ul>
+      <li>Specific audience callout in line one (“$2–10M service firms”)</li>
+      <li>Short sentences, easy to scan on mobile</li>
+    </ul>
+    <h5>Fix first</h5>
+    <ul>
+      <li>Open with the owner’s problem in their words: “You’re the bottleneck and you know it.”</li>
+      <li>Cut the 5-pillar list. One proof point beats a framework here.</li>
+      <li>CTA is “DM me” — too vague. Try “Comment ‘COO’ and I’ll send the 90-day plan.”</li>
+    </ul>
+    <div class="btnrow"><span>See rewritten version</span><span>Save analysis</span></div>
+  </div>
+</Prototype>

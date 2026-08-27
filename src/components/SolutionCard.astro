@@ -1,0 +1,73 @@
+---
+import type { Solution } from '../lib/solutions';
+import { solutionHref } from '../lib/solutions';
+import StatusBadge from './StatusBadge.astro';
+import VoteButton from './VoteButton.astro';
+
+interface Props { entry: Solution; }
+const { entry } = Astro.props;
+const { data } = entry;
+const href = solutionHref(entry);
+const num = String(data.number).padStart(2, '0');
+---
+<article
+  class="card"
+  data-card
+  data-category={data.category}
+  data-status={data.status}
+  data-slug={entry.slug}
+  data-title={data.title}
+  data-search={[data.title, data.one_liner, data.category, ...(data.tags ?? [])].join(' ').toLowerCase()}
+>
+  <a class="card__link" href={href}>
+    <div class="card__top">
+      <span class="t-label t-muted">No.&nbsp;{num}</span>
+      <StatusBadge status={data.status} />
+    </div>
+    <h3 class="card__title t-subhead">{data.title}</h3>
+    <p class="card__oneliner t-body t-muted">{data.one_liner}</p>
+  </a>
+
+  <div class="card__foot">
+    <div class="card__tags">
+      <span class="pill pill--static">{data.category}</span>
+      {data.effort && <span class="pill pill--static pill--ghost">{data.effort}</span>}
+    </div>
+    <VoteButton slug={entry.slug} variant="card" />
+  </div>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: var(--ism-rule) solid var(--ism-border);
+    background: var(--ism-bg);
+    min-height: 100%;
+  }
+  .card:hover { border-color: var(--ism-text); }
+  .card__link { display: block; padding: var(--ism-space-3); flex: 1; }
+  .card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ism-space-2);
+    margin-bottom: var(--ism-space-2);
+  }
+  .card__title { margin-bottom: 8px; }
+  .card__link:hover .card__title { color: var(--ism-action); }
+  .card__oneliner { margin: 0; }
+  .card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ism-space-2);
+    padding: var(--ism-space-2) var(--ism-space-3);
+    border-top: var(--ism-rule) solid var(--ism-border);
+    flex-wrap: wrap;
+  }
+  .card__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill--static { cursor: default; }
+  .pill--static:hover { border-color: var(--ism-border); }
+  .pill--ghost { color: var(--ism-text-muted); }
+</style>

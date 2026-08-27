@@ -1,0 +1,111 @@
+---
+title: What Should I Promote?
+number: 5
+one_liner: Of everything the owner could market right now, a decision on where to point their attention — with the reason, the angle, and the audience.
+status: exploring
+category: Marketing & Messaging
+tags: [business-growth-advisor, sots-connect, intelligence, decision-support, ai]
+effort: M
+target_user: Owners with several offers and limited attention
+visibility: internal
+created: 2026-08-25
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+
+## The problem
+
+Owners with more than one offer waste weeks half-promoting all of them. Every offer feels
+urgent; none gets a real push. The question isn't "write me a campaign" — it's "given my
+portfolio, the season, what's coming up, and what's happening in the market, *which one
+deserves the spotlight this month, and why now?*"
+
+## What it does
+
+The tool weighs the owner's offer portfolio, current priorities, recent promotions,
+seasonality, upcoming events, Audience Pulse findings, and business goals, then returns a
+**decision**:
+
+- A recommended primary promotion, with an explanation of why now is the right time
+- A messaging angle
+- The most relevant audience segment
+- An appropriate call to action
+- Optionally, a secondary promotion when one clearly earns it
+
+It is decision support, not a content generator. The output fits on a card and the owner
+can act on it or overrule it.
+
+## Who it is for
+
+Intelligence-tier owners with three-plus live offers who keep second-guessing their focus.
+Best used monthly, or whenever a launch window opens.
+
+## How it works
+
+1. An Intelligence-tier tool inside **Business Growth Advisor**.
+2. Reads the offer portfolio, priorities, recent promotion history, and calendar from the
+   shared profile.
+3. Pulls the latest Audience Pulse findings for current market context.
+4. The model scores each candidate promotion on timing, audience readiness, portfolio fit,
+   and goal alignment, then recommends one (or two) with reasoning.
+5. The recommendation is stored as a `promotion_recommendation`; the Intelligence Brief can
+   carry it forward and check whether the owner acted.
+
+## Why it is worth building
+
+- It's the connective tissue of the Intelligence tier — it consumes Audience Pulse and the
+  portfolio and produces a single next action.
+- It answers a question owners actually ask out loud, in plain language, which makes the
+  value obvious and easy to sell.
+- Low build cost relative to Audience Pulse and the Brief, because it orchestrates existing
+  context rather than doing fresh research.
+
+## Build phases
+
+### Phase 1 — Portfolio + calendar
+Score offers on priority, recency of last promotion, and upcoming events. Recommend one
+primary with reasoning, angle, segment, CTA. Store it.
+
+### Phase 2 — Market-aware
+Ingest Audience Pulse findings as a timing input. Add "why now" grounded in current signals.
+Optional secondary recommendation.
+
+### Phase 3 — Closed loop
+Feed the recommendation into the Intelligence Brief. Track acted / ignored. Learn the
+owner's overrides over time and reflect them back ("you've skipped the course three months
+running — deprioritize it?").
+
+## Stack and dependencies
+
+- SOTS Connect shell, auth, **Intelligence entitlement gate**, shared profile (offers, priorities, promotion history, events)
+- Anthropic API; structured output for the recommendation card
+- `promotion_recommendations` table: candidate set, scores, chosen promotion, reasoning, acted flag, timestamp
+- Depends on Audience Pulse for the market-timing input (Phase 2+)
+
+## Open questions and risks
+
+- **Garbage in.** Needs the owner to keep priorities and the event calendar current, or the
+  recommendation is guesswork. Progressive prompts help.
+- **Confidence framing.** Must read as "here's the case for X," not a guarantee.
+- **Thin without Pulse.** Phase 1 alone may feel obvious. The value shows up once market
+  timing is in the mix.
+- **Override handling.** Learning from overrides is powerful but easy to get creepy — keep
+  it transparent.
+
+<Prototype label="Monthly recommendation" caption="Sample output for a leadership coach with four offers.">
+  <div class="mock">
+    <h4>What Should I Promote? — April</h4>
+
+    <h5>Promote this</h5>
+    <p><strong>“Team Offsite Facilitation” — 2-day package</strong></p>
+    <p><strong>Why now:</strong> Q2 is when companies plan H2 and book offsites; you last promoted it 11 months ago; and Audience Pulse flagged rising talk of “re-aligning hybrid teams” in your audience. The 1:1 coaching program was promoted in March — too soon to repeat.</p>
+    <div class="row"><span>Angle</span><span>“Your H2 plan is only as good as the room you make it in.”</span></div>
+    <div class="row"><span>Segment</span><span>People leaders at 100–500-person companies, post-reorg</span></div>
+    <div class="row"><span>CTA</span><span>Book a 20-min offsite planning call</span></div>
+
+    <h5>Secondary (if you have bandwidth)</h5>
+    <p>Re-run the “First 90 Days” workshop — evergreen, and hiring picks up in spring.</p>
+    <div class="btnrow"><span>Use this</span><span>Pick a different offer</span></div>
+  </div>
+</Prototype>

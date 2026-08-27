@@ -1,0 +1,115 @@
+---
+title: Offer Strength Analyzer
+number: 2
+one_liner: Analyze an existing or proposed offer against the audience and the rest of the portfolio, and get the few changes that would make it stronger.
+status: prototyping
+category: Offers & Pricing
+tags: [business-growth-advisor, sots-connect, diagnostic, offers, pricing, ai]
+effort: M
+target_user: Owners packaging or repricing a service, course, or productized offer
+visibility: internal
+created: 2026-08-25
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+
+## The problem
+
+Owners tweak their offers constantly — new bonus, new price, new name — with no way to tell
+whether a change made the offer stronger or just different. Superficial "offer score"
+tools grade the wording of a sales page. Nobody checks the thing that decides whether the
+offer sells: does it match a problem this audience will pay to solve, and is it clearly
+better than the alternatives, including doing nothing.
+
+## What it does
+
+The user enters an offer — existing or proposed — and the tool evaluates it in the context
+of the stored audience and the owner's other offers:
+
+- Problem-to-offer alignment and audience fit
+- Clarity, specificity, and perceived value
+- Deliverables and buyer friction
+- Credibility and proof
+- Pricing context relative to the outcome and to the rest of the portfolio
+- Likely objections and how the offer answers them
+- Differentiation from substitutes and from inaction
+
+It prioritizes the two or three issues that most affect whether the offer converts, rather
+than returning a long even-weighted checklist, and gives concrete recommendations.
+
+## Who it is for
+
+Owners who are packaging a new offer, repricing an existing one, or trying to work out why
+a service that "should" sell isn't. Also useful before a launch, as a last gut-check.
+
+## How it works
+
+1. A tool inside **Business Growth Advisor** in SOTS Connect. Uses shared auth and the
+   shared business profile, including the multi-offer records already in the profile schema.
+2. The user picks an existing offer from the profile or drafts a new one inline.
+3. The model analyzes it against audience, audience problems, objections, and sibling
+   offers, then returns prioritized issues + fixes and an overall read (strong / mixed / weak).
+4. Results are stored as an `offer_analysis` so the Lead Magnet Opportunity Finder and the
+   Intelligence Brief can build on them ("your core offer's weak point is proof").
+
+## Why it is worth building
+
+- Offers are where revenue is won or lost; a tool that improves them earns its keep fast.
+- It naturally pairs with Message Market-Fit Checker — fix the offer, then fix the message
+  that sells it.
+- Portfolio-aware analysis (is this offer cannibalizing that one?) is something a generic
+  chatbot can't do without the stored context SOTS Connect already has.
+- Sets up a clean upsell path into the Intelligence tier's "what should I promote?" logic.
+
+## Build phases
+
+### Phase 1 — Single-offer diagnostic
+Structured offer input (name, audience, problem, deliverable, price, CTA). Prioritized
+issues + recommendations against a minimal audience object. Store the analysis.
+
+### Phase 2 — Portfolio- and profile-aware
+Pull offers, audience, and objections from the shared profile. Compare the offer against
+siblings for overlap and laddering. Progressive profiling for gaps.
+
+### Phase 3 — Cross-tool and longitudinal
+Feed weak points to the Lead Magnet Opportunity Finder and the Intelligence Brief. Track an
+offer's analysis history so the owner can see whether edits actually helped.
+
+## Stack and dependencies
+
+- SOTS Connect shell, auth, entitlement gate, shared profile (audience + multi-offer records)
+- Anthropic API with a fixed evaluation rubric; structured output
+- `offer_analyses` table: offer snapshot, verdicts, prioritized issues, recommendations, links to related runs
+- No external research needed for the base tool
+
+## Open questions and risks
+
+- **Rubric stability.** Needs a consistent scoring frame so re-runs are comparable — worth
+  an eval pass before launch.
+- **Draft vs stored offers.** Editing a stored offer inside the analyzer should optionally
+  write back to the profile, but not silently.
+- **Pricing advice boundary.** The tool comments on pricing *context*, not "charge $X" —
+  keep it out of prescriptive financial advice.
+- **Overlap with human judgment.** Position as a structured second opinion, not a verdict.
+
+<Prototype label="Analysis result" caption="Sample output for a proposed productized offer.">
+  <div class="mock">
+    <h4>Offer Strength Analyzer</h4>
+    <p class="tagline">Offer: “Website Rescue Sprint — $4,500, 2 weeks” &nbsp;·&nbsp; Audience: established local service businesses</p>
+    <div class="row"><span><strong>Overall</strong></span><span class="score">Mixed</span></div>
+    <h5>Prioritized issues</h5>
+    <ul>
+      <li><strong>Vague deliverable.</strong> “Rescue” could mean copy, design, speed, or SEO. Buyers can’t tell if it solves <em>their</em> problem, so they don’t buy.</li>
+      <li><strong>No proof.</strong> $4,500 in two weeks needs a before/after or a named result. Nothing here lowers the risk.</li>
+      <li><strong>Price sits between your other two offers</strong> ($1.5k audit, $12k rebuild) without a reason to pick it. It may just pull people down from the rebuild.</li>
+    </ul>
+    <h5>Recommendations</h5>
+    <ul>
+      <li>Pick one outcome to own: “A homepage that loads in under 2s and states what you do in 5 words.”</li>
+      <li>Add one case result and a simple guarantee (“or the sprint is free”).</li>
+      <li>Frame it as the on-ramp to the rebuild, not an alternative to it.</li>
+    </ul>
+    <div class="btnrow"><span>Compare to “Full Rebuild”</span><span>Save analysis</span></div>
+  </div>
+</Prototype>

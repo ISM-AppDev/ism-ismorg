@@ -1,0 +1,105 @@
+---
+import '../styles/ism.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** breadcrumb trail shown in the header, e.g. ['Catalog'] or ['Leads','The Monday 10'] */
+  crumbs?: string[];
+}
+
+const { title, description = 'A catalog of applications Impact System Marketing could build.', crumbs = [] } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const fullTitle = title === 'Solution Ideas' ? title : `${title} — Solution Ideas`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <!-- private until deliberately made public -->
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,700;1,800;1,900&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
+    />
+
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header__row">
+        <a class="site-header__mark" href={base + '/'}>
+          <span class="site-header__ism">ISM</span>
+          <span class="site-header__sep" aria-hidden="true"></span>
+          <span class="site-header__name">Solution Ideas</span>
+        </a>
+        {crumbs.length > 0 && (
+          <nav class="site-header__crumbs t-label t-muted" aria-label="Breadcrumb">
+            {crumbs.map((c) => (
+              <><span class="site-header__crumb-sep">/</span><span>{c}</span></>
+            ))}
+          </nav>
+        )}
+      </div>
+      <hr class="rule" />
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <hr class="rule" />
+      <div class="container site-footer__row t-caption t-muted">
+        <span>Impact System Marketing — internal idea catalog</span>
+        <a href="https://impactsystemmarketing.com">impactsystemmarketing.com</a>
+      </div>
+    </footer>
+
+    <style>
+      .site-header__row {
+        display: flex;
+        align-items: baseline;
+        gap: var(--ism-space-3);
+        padding-block: var(--ism-space-3);
+        flex-wrap: wrap;
+      }
+      .site-header__mark {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 10px;
+        font-style: italic;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: -0.01em;
+      }
+      .site-header__ism { color: var(--ism-action); font-size: 1.125rem; }
+      .site-header__sep {
+        width: 2px; height: 0.9em;
+        background: var(--ism-border);
+        transform: translateY(0.08em);
+      }
+      .site-header__name { font-size: 1.125rem; }
+      .site-header__crumbs { display: flex; gap: 8px; align-items: center; }
+      .site-header__crumb-sep { opacity: 0.5; }
+
+      .site-footer { margin-top: var(--ism-space-12); }
+      .site-footer__row {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--ism-space-2);
+        padding-block: var(--ism-space-3) var(--ism-space-6);
+        flex-wrap: wrap;
+      }
+      .site-footer__row a { border-bottom: 2px solid var(--ism-border); }
+      .site-footer__row a:hover { border-bottom-color: var(--ism-text); }
+    </style>
+  </body>
+</html>

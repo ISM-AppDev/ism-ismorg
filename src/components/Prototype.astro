@@ -1,0 +1,81 @@
+---
+/**
+ * Wrapper for the hand-built "what the user would actually see" mockup on an
+ * idea page. Drop arbitrary markup into the default slot inside an .mdx file:
+ *
+ *   <Prototype label="Weekly email" caption="Sample output, not live">
+ *     ...bespoke HTML...
+ *   </Prototype>
+ */
+interface Props {
+  label?: string;
+  caption?: string;
+}
+const { label = 'Prototype', caption = 'Illustrative mockup — not a live feature.' } = Astro.props;
+---
+<figure class="proto">
+  <figcaption class="proto__cap">
+    <span class="t-label t-crimson">{label}</span>
+    <span class="t-caption t-muted">{caption}</span>
+  </figcaption>
+  <div class="proto__frame">
+    <slot />
+  </div>
+</figure>
+
+<style>
+  .proto { margin: var(--ism-space-4) 0 0; }
+  .proto__cap {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ism-space-2);
+    padding-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .proto__frame {
+    border: var(--ism-rule) solid var(--ism-text);
+    background: var(--ism-surface);
+    padding: var(--ism-space-3);
+    overflow-x: auto;
+  }
+  /* readable defaults for whatever the mockup drops in */
+  .proto__frame :global(.mock) {
+    background: #fff;
+    border: 2px solid var(--ism-border);
+    padding: var(--ism-space-3);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .proto__frame :global(.mock + .mock) { margin-top: var(--ism-space-2); }
+  .proto__frame :global(.mock h4) {
+    margin: 0 0 6px;
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1rem;
+  }
+  .proto__frame :global(.mock h5) {
+    margin: 12px 0 4px;
+    font-size: 0.8125rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ism-text-muted);
+  }
+  .proto__frame :global(.mock ul) { margin: 4px 0; padding-left: 1.1rem; }
+  .proto__frame :global(.mock .row) {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 6px 0; border-bottom: 1px solid var(--ism-border);
+  }
+  .proto__frame :global(.mock .row:last-child) { border-bottom: 0; }
+  .proto__frame :global(.mock .tagline) { color: var(--ism-text-muted); }
+  .proto__frame :global(.mock .score) {
+    font-family: var(--ism-font-condensed);
+    font-size: 1.5rem; font-weight: 700; color: var(--ism-action);
+  }
+  .proto__frame :global(.mock .btnrow) { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .proto__frame :global(.mock .btnrow span) {
+    font-family: var(--ism-font-condensed);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    font-size: 0.8125rem; padding: 4px 10px; border: 2px solid var(--ism-border);
+  }
+</style>

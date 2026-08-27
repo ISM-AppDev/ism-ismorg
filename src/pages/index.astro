@@ -1,0 +1,176 @@
+---
+import Base from '../layouts/Base.astro';
+import SolutionCard from '../components/SolutionCard.astro';
+import { getSolutions, statusTotals } from '../lib/solutions';
+import { CATEGORIES } from '../content/config';
+
+const items = await getSolutions();
+const totals = statusTotals(items);
+
+// only show category pills that actually have ideas, in canonical order
+const present = new Set(items.map((i) => i.data.category));
+const categories = CATEGORIES.filter((c) => present.has(c));
+---
+<Base title="Solution Ideas" crumbs={['Catalog']}>
+  <section class="section--tight container">
+    <p class="t-label t-crimson hero__kicker">Internal</p>
+    <h1 class="t-display-2xl hero__title">Solution&nbsp;Ideas</h1>
+    <p class="t-body-l hero__blurb">
+      A working catalog of applications Impact System Marketing could build — most of them
+      aimed at small-business owners. Each idea has a one-page brief: the problem, how it
+      works, what it would take to build in phases, and a prototype of what the user
+      would actually see. Vote on the ones worth pursuing.
+    </p>
+
+    <dl class="stats">
+      <div><dt class="t-display-l">{totals.total}</dt><dd class="t-label t-muted">ideas</dd></div>
+      <div><dt class="t-display-l">{totals.live}</dt><dd class="t-label t-muted">live</dd></div>
+      <div><dt class="t-display-l">{totals.building}</dt><dd class="t-label t-muted">building</dd></div>
+      <div><dt class="t-display-l">{totals.prototyping}</dt><dd class="t-label t-muted">prototyped</dd></div>
+      <div><dt class="t-display-l">{totals.idea}</dt><dd class="t-label t-muted">early</dd></div>
+    </dl>
+  </section>
+
+  <hr class="rule container-rule" />
+
+  <section class="section--tight container" data-catalog>
+    <div class="controls">
+      <div class="controls__filters" role="group" aria-label="Filter by category">
+        <button class="pill is-active" data-filter data-category="" aria-pressed="true">All</button>
+        {categories.map((c) => (
+          <button class="pill" data-filter data-category={c} aria-pressed="false">{c}</button>
+        ))}
+      </div>
+      <div class="controls__right">
+        <label class="controls__search">
+          <span class="visually-hidden">Search ideas</span>
+          <input type="search" placeholder="Search ideas…" data-search autocomplete="off" />
+        </label>
+        <button class="pill" data-sort aria-pressed="false">
+          Sort: <span data-sort-label>catalog order</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="controls__count t-caption t-muted" data-count>{items.length} ideas</p>
+
+    <div class="grid" data-grid>
+      {items.map((entry) => <SolutionCard entry={entry} />)}
+    </div>
+
+    <p class="grid__empty t-body t-muted" data-empty hidden>No ideas match that filter.</p>
+  </section>
+
+  <style>
+    .hero__kicker { margin: 0 0 var(--ism-space-2); }
+    .hero__title { margin: 0 0 var(--ism-space-3); }
+    .hero__blurb { max-width: 60ch; margin: 0 0 var(--ism-space-6); }
+
+    .stats { display: flex; flex-wrap: wrap; gap: var(--ism-space-6); margin: 0; }
+    .stats div { display: flex; flex-direction: column; gap: 4px; }
+    .stats dt { margin: 0; }
+    .stats dd { margin: 0; }
+
+    .container-rule { max-width: var(--ism-maxw); margin-inline: auto; }
+
+    .controls {
+      display: flex; justify-content: space-between; gap: var(--ism-space-3);
+      align-items: flex-start; flex-wrap: wrap;
+      margin-bottom: var(--ism-space-3);
+    }
+    .controls__filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .controls__right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .controls__search input {
+      font-family: var(--ism-font-display);
+      font-size: 0.9375rem;
+      padding: 8px 12px;
+      border: var(--ism-rule) solid var(--ism-border);
+      background: var(--ism-bg);
+      color: var(--ism-text);
+      min-width: 200px;
+    }
+    .controls__search input:focus-visible { outline: var(--ism-rule) solid var(--ism-action); outline-offset: 2px; border-color: var(--ism-action); }
+    .controls__count { margin: 0 0 var(--ism-space-3); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--ism-space-3);
+    }
+    .grid__empty { padding: var(--ism-space-6) 0; }
+    [data-card][hidden] { display: none; }
+  </style>
+
+  <script>
+    const root = document.querySelector<HTMLElement>('[data-catalog]');
+    if (root) {
+      const grid = root.querySelector<HTMLElement>('[data-grid]')!;
+      const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'));
+      const filters = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+      const searchInput = root.querySelector<HTMLInputElement>('[data-search]')!;
+      const sortBtn = root.querySelector<HTMLButtonElement>('[data-sort]')!;
+      const sortLabel = root.querySelector<HTMLElement>('[data-sort-label]')!;
+      const countEl = root.querySelector<HTMLElement>('[data-count]')!;
+      const emptyEl = root.querySelector<HTMLElement>('[data-empty]')!;
+
+      const catalogOrder = cards.slice();
+      let activeCategory = '';
+      let query = '';
+      let sortByVotes = false;
+      let voteCounts: Record<string, number> = {};
+
+      const apply = () => {
+        let visible = 0;
+        for (const card of cards) {
+          const matchCat = !activeCategory || card.dataset.category === activeCategory;
+          const matchQuery = !query || (card.dataset.search ?? '').includes(query);
+          const show = matchCat && matchQuery;
+          card.hidden = !show;
+          if (show) visible++;
+        }
+        countEl.textContent = `${visible} idea${visible === 1 ? '' : 's'}`;
+        emptyEl.hidden = visible !== 0;
+      };
+
+      const reorder = () => {
+        const ordered = sortByVotes
+          ? cards.slice().sort((a, b) => (voteCounts[b.dataset.slug!] ?? 0) - (voteCounts[a.dataset.slug!] ?? 0))
+          : catalogOrder;
+        for (const card of ordered) grid.appendChild(card);
+      };
+
+      filters.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activeCategory = btn.dataset.category ?? '';
+          filters.forEach((b) => {
+            const on = b === btn;
+            b.classList.toggle('is-active', on);
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+          apply();
+        });
+      });
+
+      searchInput.addEventListener('input', () => {
+        query = searchInput.value.trim().toLowerCase();
+        apply();
+      });
+
+      sortBtn.addEventListener('click', async () => {
+        sortByVotes = !sortByVotes;
+        sortBtn.setAttribute('aria-pressed', sortByVotes ? 'true' : 'false');
+        sortBtn.classList.toggle('is-active', sortByVotes);
+        sortLabel.textContent = sortByVotes ? 'most votes' : 'catalog order';
+        if (sortByVotes && !Object.keys(voteCounts).length) {
+          try {
+            const r = await fetch(`${import.meta.env.BASE_URL}/api/votes`.replace(/\/{2,}/g, '/'));
+            if (r.ok) voteCounts = await r.json();
+          } catch { /* leave empty; order unchanged */ }
+        }
+        reorder();
+      });
+
+      apply();
+    }
+  </script>
+</Base>

@@ -1,0 +1,121 @@
+---
+title: Audience Pulse
+number: 4
+one_liner: A recurring read on what is changing with the owner's market and audience, and whether it should change how they communicate.
+status: exploring
+category: Market Intelligence
+tags: [business-growth-advisor, sots-connect, intelligence, research, ai, recurring]
+effort: L
+target_user: Owners on the Intelligence tier who want to stay ahead of their market
+visibility: internal
+created: 2026-08-25
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+
+## The problem
+
+Owners are heads-down in delivery and miss the slow shifts that matter: a new objection
+creeping into sales calls, a competitor's message everyone starts echoing, an economic
+pressure changing what the buyer will spend on. By the time it's obvious, the messaging is
+already stale. Generic "industry news" digests don't help — they're not about *this*
+business's audience and offers.
+
+## What it does
+
+Audience Pulse runs on a schedule (weekly or monthly) and monitors the owner's specific
+audience for meaningful change:
+
+- Emerging concerns and frustrations
+- Questions being asked more often
+- Industry, economic, technology, and regulatory developments that touch this audience
+- Market trends and buying-behavior changes
+- Terminology shifts and language the audience is tired of
+- New objections and new opportunities
+
+For each finding it separates **what is happening** from **why it matters**, and translates
+it into messaging implications, language to watch, content opportunities, and offer
+implications. The guiding distinction: Audience Pulse answers *"what should I know?"*, not
+*"what should I write?"*
+
+## Who it is for
+
+Intelligence-tier owners — typically a bit more established, marketing actively, and willing
+to pay for a standing advantage rather than one-off tools.
+
+## How it works
+
+1. An Intelligence-tier capability inside **Business Growth Advisor**. Requires the upgrade.
+2. Uses the shared profile (audience, segments, problems, offers, positioning) to keep
+   research narrow and specific to the business.
+3. A modular research layer gathers current external signals with source tracking, then the
+   model interprets them against the stored context.
+4. Findings are stored with timestamps and sources. Each cycle compares against the last so
+   the report can flag *new since last time* vs *still true* vs *fading*.
+5. Findings feed other tools: audience language → Message Market-Fit Checker; concerns and
+   objections → What Should I Promote? and the Intelligence Brief.
+
+## Why it is worth building
+
+- It is the core of the Intelligence tier's value: the product keeps working when the owner
+  isn't logged in.
+- It compounds. A stored history of what changed becomes something a competitor's generic
+  tool can't replicate.
+- It de-risks the rest of the suite — every other tool gets sharper when it knows what's
+  currently moving in the market.
+
+## Build phases
+
+### Phase 1 — Manual-trigger single report
+Owner clicks "run pulse". Research layer pulls current signals for the stored audience;
+model returns findings split into happening / why-it-matters / implications. Store with
+sources.
+
+### Phase 2 — Scheduled and comparative
+Weekly/monthly schedule. Historical storage and a diff against the prior cycle
+("new / still important / fading / no longer significant"). Duplicate suppression.
+
+### Phase 3 — Wired into the suite
+Push findings to Message Market-Fit Checker, What Should I Promote?, and the Business Growth
+Intelligence Brief. Add competitor-signal monitoring and emerging-buyer-language extraction
+as sub-modules. Off-cycle alerts for high-threshold events.
+
+## Stack and dependencies
+
+- SOTS Connect shell, auth, **Intelligence entitlement gate**, shared profile
+- A reusable research/validation layer with source + freshness tracking (shared with the Intelligence Brief)
+- Anthropic API for interpretation; strict separation of sourced fact vs AI inference
+- `audience_pulse_reports` + `research_findings` tables; `previously_reported_findings` for de-dup
+- Scheduler / job runner (shared with Scheduled Report Jobs)
+
+## Open questions and risks
+
+- **Research quality and cost.** External research per cycle per user has a real API/token
+  cost; needs source allow-listing and caching.
+- **Prompt-injection.** External pages are untrusted input — must be sandboxed from
+  instructions.
+- **"So what" gap.** The hard part is not gathering signals, it's the *why it matters for
+  you* translation. That's where the value or the disappointment lives.
+- **Cadence.** Weekly may be too noisy for slow markets; monthly too slow for fast ones.
+  Per-user configurable.
+- **Overlap with the Intelligence Brief.** Pulse is the research engine; the Brief is the
+  packaged deliverable. Keep the boundary clear or they cannibalize each other.
+
+<Prototype label="Monthly pulse" caption="Sample section — one finding — for a B2B SaaS consultant.">
+  <div class="mock">
+    <h4>Audience Pulse — March</h4>
+    <p class="tagline">Audience: RevOps leaders at 50–200-person SaaS companies</p>
+
+    <h5>New since last month</h5>
+    <p><strong>What is happening:</strong> “AI SDR” tools are being cut in Q1 budget reviews after underwhelming pilots. RevOps leaders are posting about wasted spend and pipeline that never converted.</p>
+    <p><strong>Why it matters to you:</strong> your “RevOps audit” offer has been positioned around adding automation. Right now the audience is skeptical of adding tools and receptive to *rationalizing* the stack they already bought.</p>
+    <h5>Implications</h5>
+    <ul>
+      <li><strong>Message:</strong> lead with “audit what you already pay for” not “add automation.”</li>
+      <li><strong>Language to use:</strong> “stack rationalization,” “tool ROI review.” Avoid “AI-powered.”</li>
+      <li><strong>Offer:</strong> a fixed-fee “SaaS stack ROI teardown” may sell better than the full audit right now.</li>
+    </ul>
+    <p class="tagline">Sources: 4 LinkedIn posts, 1 industry survey (Feb), 2 vendor earnings notes · gathered 3 Mar</p>
+  </div>
+</Prototype>

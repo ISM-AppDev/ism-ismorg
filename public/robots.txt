@@ -1,0 +1,3 @@
+# The catalog is private until deliberately made public.
+User-agent: *
+Disallow: /

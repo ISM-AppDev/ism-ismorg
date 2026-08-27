@@ -1,0 +1,47 @@
+---
+import type { Solution } from '../lib/solutions';
+import { STATUS_LABEL } from '../lib/solutions';
+
+interface Props { entry: Solution; }
+const { entry } = Astro.props;
+const { data } = entry;
+
+const EFFORT_LABEL: Record<string, string> = { S: 'Small', M: 'Medium', L: 'Large' };
+const fmt = (d?: Date) =>
+  d ? d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : undefined;
+
+const rows: Array<[string, string | undefined]> = [
+  ['Category', data.category],
+  ['Status', STATUS_LABEL[data.status] ?? data.status],
+  ['Effort', data.effort ? EFFORT_LABEL[data.effort] : undefined],
+  ['Target user', data.target_user],
+  ['Updated', fmt(data.updated) ?? fmt(data.created)],
+];
+---
+<dl class="meta">
+  {rows.filter(([, v]) => v).map(([k, v]) => (
+    <div class="meta__item">
+      <dt class="t-label t-muted">{k}</dt>
+      <dd class="t-body">{v}</dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    margin: 0;
+    border: var(--ism-rule) solid var(--ism-border);
+  }
+  .meta__item { padding: var(--ism-space-2) var(--ism-space-3); }
+  .meta__item + .meta__item { border-left: var(--ism-rule) solid var(--ism-border); }
+  .meta dt { margin-bottom: 6px; }
+  .meta dd { margin: 0; }
+  @media (max-width: 640px) {
+    .meta { grid-template-columns: 1fr 1fr; }
+    .meta__item:nth-child(2n) { border-left: var(--ism-rule) solid var(--ism-border); }
+    .meta__item:nth-child(n + 3) { border-top: var(--ism-rule) solid var(--ism-border); }
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import MetaStrip from '../components/MetaStrip.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import VoteButton from '../components/VoteButton.astro';
+import { getSolutions, solutionHref } from '../lib/solutions';
+
+export async function getStaticPaths() {
+  const items = await getSolutions();
+  return items.map((entry, i) => ({
+    params: { slug: entry.slug },
+    props: {
+      entry,
+      prev: items[i - 1] ?? null,
+      next: items[i + 1] ?? null,
+    },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+const num = String(data.number).padStart(2, '0');
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title={data.title} description={data.one_liner} crumbs={[data.category, data.title]}>
+  <article class="section--tight container">
+    <a class="back t-label t-muted" href={base + '/'}>&larr; All ideas</a>
+
+    <header class="idea__head">
+      <div class="idea__head-top">
+        <span class="t-label t-muted">No.&nbsp;{num}</span>
+        <StatusBadge status={data.status} />
+      </div>
+      <h1 class="t-display-l">{data.title}</h1>
+      <p class="t-body-l t-muted idea__tagline">{data.one_liner}</p>
+      <div class="idea__vote">
+        <VoteButton slug={entry.slug} variant="detail" />
+      </div>
+    </header>
+
+    <MetaStrip entry={entry} />
+
+    <div class="prose idea__body">
+      <Content />
+    </div>
+
+    <nav class="idea__nav">
+      {prev ? (
+        <a class="idea__nav-link" href={solutionHref(prev)}>
+          <span class="t-label t-muted">&larr; Previous</span>
+          <span class="t-body">{prev.data.title}</span>
+        </a>
+      ) : <span />}
+      {next ? (
+        <a class="idea__nav-link idea__nav-link--next" href={solutionHref(next)}>
+          <span class="t-label t-muted">Next &rarr;</span>
+          <span class="t-body">{next.data.title}</span>
+        </a>
+      ) : <span />}
+    </nav>
+  </article>
+
+  <style>
+    .back { display: inline-block; margin-bottom: var(--ism-space-4); }
+    .back:hover { color: var(--ism-action); }
+    .idea__head { margin-bottom: var(--ism-space-4); }
+    .idea__head-top {
+      display: flex; align-items: center; gap: var(--ism-space-2);
+      margin-bottom: var(--ism-space-2);
+    }
+    .idea__tagline { margin: var(--ism-space-2) 0 0; max-width: 60ch; }
+    .idea__vote { margin-top: var(--ism-space-3); }
+    .idea__body { margin-top: var(--ism-space-6); }
+    .idea__nav {
+      display: flex; justify-content: space-between; gap: var(--ism-space-3);
+      margin-top: var(--ism-space-12);
+      border-top: var(--ism-rule) solid var(--ism-text);
+      padding-top: var(--ism-space-3);
+    }
+    .idea__nav-link { display: flex; flex-direction: column; gap: 4px; max-width: 45%; }
+    .idea__nav-link--next { text-align: right; align-items: flex-end; }
+    .idea__nav-link:hover .t-body { color: var(--ism-action); }
+  </style>
+</Base>

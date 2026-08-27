@@ -1,0 +1,24 @@
+# build output
+dist/
+.output/
+
+# deps
+node_modules/
+
+# astro
+.astro/
+
+# env / local
+.env
+.env.*
+!.env.example
+
+# os / editor
+.DS_Store
+*.log
+npm-debug.log*
+
+# vote service local data
+service/*.db
+service/*.db-*
+data/

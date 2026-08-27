@@ -1,0 +1,277 @@
+/* =========================================================================
+   Impact System Marketing — design tokens + base styles
+   Extracted from the ISM style guide ("TOKENS" page).
+   Sharp corners everywhere (radius 0), 2px rules, crimson as the only
+   action colour, Archivo display type with italic headings.
+   ========================================================================= */
+
+:root {
+  /* --- raw ramps (reach in only when building a new semantic token) --- */
+  --ism-crimson-100: #ffe9e7;
+  --ism-crimson-300: #f9a3a0;
+  --ism-crimson-500: #bc2534;   /* Impact Red */
+  --ism-crimson-700: #800015;
+  --ism-crimson-900: #440006;
+
+  --ism-charcoal-100: #f6f2f2;
+  --ism-charcoal-300: #d8d5d4;
+  --ism-charcoal-500: #959191;
+  --ism-charcoal-700: #424242;
+  --ism-charcoal-900: #222020;   /* System Charcoal */
+
+  /* --- semantic --- */
+  --ism-bg: #ffffff;
+  --ism-surface: var(--ism-charcoal-100);
+  --ism-border: var(--ism-charcoal-300);
+  --ism-text: #201e1d;
+  --ism-text-muted: var(--ism-charcoal-500);
+
+  --ism-action: var(--ism-crimson-500);
+  --ism-action-hover: var(--ism-crimson-700);
+  --ism-action-pressed: var(--ism-crimson-900);
+  --ism-success: #257c3a;
+  --ism-warning: #cb7f00;
+  --ism-error: var(--ism-crimson-500);
+
+  --ism-font-display: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --ism-font-condensed: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+
+  --ism-radius: 0;
+  --ism-rule: 2px;
+
+  /* --- space: 8px base, 24px gutter, 96px section rhythm --- */
+  --ism-space-1: 8px;
+  --ism-space-2: 16px;
+  --ism-space-3: 24px;
+  --ism-space-4: 32px;
+  --ism-space-6: 48px;
+  --ism-space-8: 64px;
+  --ism-space-12: 96px;
+
+  --ism-maxw: 1120px;
+}
+
+/* ------------------------------ reset ---------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ism-bg);
+  color: var(--ism-text);
+  font-family: var(--ism-font-display);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg { max-width: 100%; height: auto; display: block; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover { text-decoration: none; }
+
+button { font-family: inherit; }
+
+hr {
+  border: 0;
+  border-top: var(--ism-rule) solid var(--ism-text);
+  margin: var(--ism-space-6) 0;
+}
+
+/* --------------------------- typography ------------------------------- */
+.t-display-2xl,
+.t-display-xl,
+.t-display-l,
+.t-heading {
+  font-style: italic;              /* italic is part of the display styles */
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.t-display-2xl { font-size: clamp(2.75rem, 6vw, 4.5rem); line-height: 0.88; }
+.t-display-xl  { font-size: clamp(2.25rem, 4.5vw, 3.5rem); line-height: 0.9; }
+.t-display-l   { font-size: clamp(1.875rem, 3.2vw, 2.5rem); line-height: 0.95; }
+.t-heading     { font-size: 1.75rem; line-height: 1.05; }
+
+.t-subhead {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  font-weight: 700;
+  margin: 0;
+}
+
+.t-label {
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.t-body-l { font-size: 1.125rem; line-height: 1.55; }
+.t-body   { font-size: 1rem; line-height: 1.6; }
+.t-caption { font-size: 0.8125rem; line-height: 1.45; }
+
+.t-muted { color: var(--ism-text-muted); }
+.t-crimson { color: var(--ism-action); }
+
+/* ---------------------------- layout -------------------------------- */
+.container {
+  max-width: var(--ism-maxw);
+  margin: 0 auto;
+  padding-inline: var(--ism-space-3);
+}
+
+.section { padding-block: var(--ism-space-12); }
+.section--tight { padding-block: var(--ism-space-8); }
+
+.stack > * + * { margin-top: var(--ism-space-2); }
+.stack-lg > * + * { margin-top: var(--ism-space-4); }
+
+/* ----------------------------- rule -------------------------------- */
+.rule {
+  border: 0;
+  border-top: var(--ism-rule) solid var(--ism-text);
+  margin: 0;
+}
+.rule--thin { border-top-color: var(--ism-border); }
+
+/* ---------------------------- pills / tags -------------------------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ism-font-condensed);
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 7px 12px 6px;
+  border: var(--ism-rule) solid var(--ism-border);
+  background: var(--ism-bg);
+  color: var(--ism-text);
+  border-radius: var(--ism-radius);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--ism-text); }
+.pill[aria-pressed='true'],
+.pill.is-active {
+  background: var(--ism-text);
+  border-color: var(--ism-text);
+  color: #fff;
+}
+
+/* ------------------------- status badge --------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ism-font-condensed);
+  font-size: 0.8125rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 5px 8px 4px;
+  border: var(--ism-rule) solid currentColor;
+}
+.badge::before {
+  content: '';
+  width: 7px; height: 7px;
+  background: currentColor;
+}
+.badge--live       { color: var(--ism-success); }
+.badge--building    { color: var(--ism-action); }
+.badge--prototyping { color: var(--ism-warning); }
+.badge--exploring   { color: var(--ism-charcoal-700); }
+.badge--spark       { color: var(--ism-charcoal-500); }
+.badge--parked      { color: var(--ism-charcoal-500); }
+
+/* ----------------------------- button ---------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--ism-font-display);
+  font-weight: 700;
+  font-style: italic;
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  border: var(--ism-rule) solid var(--ism-action);
+  background: var(--ism-action);
+  color: #fff;
+  border-radius: var(--ism-radius);
+  cursor: pointer;
+}
+.btn:hover { background: var(--ism-action-hover); border-color: var(--ism-action-hover); }
+.btn:active { background: var(--ism-action-pressed); border-color: var(--ism-action-pressed); }
+.btn--ghost {
+  background: transparent;
+  color: var(--ism-text);
+  border-color: var(--ism-text);
+}
+.btn--ghost:hover { background: var(--ism-text); color: #fff; }
+
+/* --------------------------- focus state ------------------------- */
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: var(--ism-rule) solid var(--ism-action);
+  outline-offset: 2px;
+}
+
+/* --------------------------- prose ------------------------------- */
+.prose { max-width: 68ch; }
+.prose > * + * { margin-top: var(--ism-space-2); }
+.prose h2 {
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-top: var(--ism-space-6);
+  padding-top: var(--ism-space-2);
+  border-top: var(--ism-rule) solid var(--ism-border);
+}
+.prose h3 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin-top: var(--ism-space-4);
+}
+.prose ul, .prose ol { padding-left: 1.25rem; }
+.prose li + li { margin-top: 4px; }
+.prose strong { font-weight: 700; }
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+  background: var(--ism-surface);
+  padding: 1px 5px;
+  border: 1px solid var(--ism-border);
+}
+.prose a {
+  color: var(--ism-action);
+  border-bottom: 2px solid var(--ism-crimson-300);
+}
+.prose a:hover { border-bottom-color: var(--ism-action); }
+
+/* --------------------- visually hidden -------------------------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

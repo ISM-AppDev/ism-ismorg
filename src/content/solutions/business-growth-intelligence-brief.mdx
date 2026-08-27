@@ -1,0 +1,134 @@
+---
+title: Business Growth Intelligence Brief
+number: 6
+one_liner: A recurring, personalized brief delivered to the owner's inbox that says what changed for their specific business and what to do about it.
+status: exploring
+category: Market Intelligence
+tags: [business-growth-advisor, sots-connect, intelligence, email, recurring, ai]
+effort: L
+target_user: Intelligence-tier owners who want the product to come to them
+visibility: internal
+created: 2026-08-25
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+
+## The problem
+
+Even good tools only help when the owner remembers to open them. Between busy weeks, the
+Business Growth Advisor suite sits unused and the subscription starts to feel optional. And
+the intelligence that would actually move the needle — what changed for *this* business's
+audience and offers — never gets assembled unless someone sits down to assemble it.
+
+## What it does
+
+The Business Growth Intelligence Brief is a recurring email (weekly, biweekly, or monthly,
+owner's choice) that combines the shared profile, prior Business Growth Advisor findings,
+the latest Audience Pulse research, and fresh external validation for that cycle into one
+short executive-style brief. It answers a single question: **what changed or matters for my
+business, audience, offers, and marketing decisions right now?**
+
+Recommended structure:
+
+1. **What changed** — important new developments since the last brief
+2. **What your audience is saying** — current concerns, objections, questions, language
+3. **Competitor & market signals** — relevant moves among chosen competitors or the category
+4. **Potential growth opportunities** — messaging, offer, or lead-gen openings worth testing
+5. **What I recommend you focus on** — a single prioritized recommendation
+6. **Your next best action** — one concrete step, linked straight into the relevant tool
+
+It is not a newsletter and not a summary of public news. Sourced facts are marked separately
+from AI interpretation, with timestamps and references.
+
+## Who it is for
+
+Intelligence-tier owners. This feature is the reason the tier is a subscription rather than
+a pack of tools — it's the proactive layer.
+
+## How it works
+
+1. **Intelligence-tier only** capability inside Business Growth Advisor. Not available on the
+   base entitlement.
+2. The owner sets a delivery frequency; the architecture supports adding frequencies later
+   without schema changes.
+3. On each cycle a scheduled job assembles inputs: shared profile, recent tool runs,
+   Audience Pulse findings, and a fresh research pass. The model drafts the six-section brief.
+4. Every brief and its supporting findings are stored, so future briefs avoid repetition,
+   show change over time, and can reference past recommendations.
+5. Email delivery is a first-class concern: store scheduled/generated/sent dates, failure
+   state, retries. Owners can pause, change frequency, and resume without losing history.
+6. Each "next best action" deep-links into Message Market-Fit Checker, Offer Strength
+   Analyzer, Lead Magnet Opportunity Finder, or What Should I Promote?.
+
+## Why it is worth building
+
+- It is the front door of the Intelligence tier. The brief identifies what deserves
+  attention; the existing tools help the owner act on it.
+- Proactive delivery is the strongest retention mechanism in the suite — value arrives
+  whether or not the owner logs in.
+- The stored history creates a switching cost: leaving means losing the running record of
+  what changed and what was tried.
+
+## Build phases
+
+### Phase 1 — Manual brief, on-screen
+Assemble profile + recent runs + one research pass into the six-section format. Render in
+the app. Store the brief. No email, no schedule.
+
+### Phase 2 — Scheduled email delivery
+Frequency setting, scheduled job, email send with full delivery-status tracking, pause /
+resume / change frequency. Historical archive in the app.
+
+### Phase 3 — Cumulative and linked
+Diff against prior briefs ("new / still important / fading"). Deep links from "next best
+action" into each tool. Off-cycle alerts for high-threshold events. Competitor-monitoring
+and emerging-buyer-language sections powered by Audience Pulse sub-modules.
+
+## Stack and dependencies
+
+- SOTS Connect shell, auth, **Intelligence entitlement gate**, shared profile
+- Depends on **Audience Pulse** (research engine) and benefits from **What Should I Promote?**
+- Shared research/validation layer with source + freshness tracking; fact vs inference separation
+- Email delivery service (Resend, matching SOTS Connect) with per-message status records
+- Scheduler / job runner; `intelligence_briefs`, `email_delivery_history`, `delivery_preferences`, `scheduled_report_jobs` tables
+- Anthropic API for drafting; duplicate-suppression against `previously_reported_findings`
+
+## Open questions and risks
+
+- **Repetition.** Without solid diffing against past briefs, month three reads like month
+  one and the owner unsubscribes. The comparison mechanism is make-or-break.
+- **Research cost and reliability.** Per-user external research every cycle — needs
+  caching, source allow-listing, and a fallback when research is thin.
+- **Deliverability.** Recurring AI-generated email has spam-filter risk; needs proper
+  domain auth and send reputation management.
+- **Generic drift.** The brief must stay specific to the business. A generic-sounding brief
+  is worse than no brief.
+- **Frequency default.** Monthly is the safe default for signal-to-noise; let owners opt
+  into more.
+
+<Prototype label="Email — monthly brief" caption="Sample, abridged, for a commercial insurance broker.">
+  <div class="mock">
+    <h4>Your Business Growth Brief — February</h4>
+    <p class="tagline">Impact System Marketing · for Rivera Commercial Lines · covers 6 Jan – 3 Feb</p>
+
+    <h5>1 · What changed</h5>
+    <p>Your state's workers-comp rates were approved for a 7.9% average increase, effective April. Renewal conversations in your book will be harder in Q2.</p>
+
+    <h5>2 · What your audience is saying</h5>
+    <p>Contractors and restaurants (your two biggest segments) are asking about “ghost policies” and cheaper minimum-premium options. New objection showing up: “can I just go direct?”</p>
+
+    <h5>4 · Growth opportunities to test</h5>
+    <ul>
+      <li>A pre-renewal “rate increase game plan” email sequence for your April–June book.</li>
+      <li>A short teardown offer: “Send me your dec page, I'll find what you're overpaying for.”</li>
+    </ul>
+
+    <h5>5 · Focus on</h5>
+    <p>Get ahead of the April renewals. Warm the book now, before the increase letters land.</p>
+
+    <h5>6 · Your next best action</h5>
+    <p>Draft the pre-renewal sequence. <em>→ Open Lead Magnet Opportunity Finder</em></p>
+    <p class="tagline">Sourced facts: state rate filing (24 Jan), 3 industry articles. Interpretation and recommendations are AI-generated.</p>
+  </div>
+</Prototype>
