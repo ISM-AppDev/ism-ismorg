@@ -1,28 +1,32 @@
 ---
 /**
- * Wrap the tail of an idea page that should NOT be shown to the public:
- * "Why it's worth building", build phases, stack, risks, prototype.
+ * Wraps the tail of an idea page that is NOT public: "Why it's worth building",
+ * build phases, stack, risks, prototype / app screenshots.
  *
- *   <TeamOnly>
- *   ## Why it is worth building
- *   ...
- *   </TeamOnly>
- *
- * - Private build (default): renders the content with an "Internal" marker so
- *   you can see exactly what is gated.
- * - Public build (PUBLIC_BUILD=1): the content is omitted entirely and a short
- *   "sign in to see the rest" note is shown instead.
+ * - Public build (PUBLIC_BUILD=1): the wrapped content is omitted entirely and
+ *   a "sign in for the rest" note is shown, linking to the password-gated
+ *   /solutions/team/ version of this same page.
+ * - Team build (default / TEAM_BUILD=1): renders the content, with an
+ *   "Internal" marker so the boundary is visible.
  */
 const PUBLIC = process.env.PUBLIC_BUILD === '1';
+
+// /solutions/foo  ->  /solutions/team/foo   (only used in the public build)
+const p = Astro.url.pathname;
+const teamHref = p.startsWith('/solutions/team')
+  ? p
+  : p.startsWith('/solutions')
+    ? p.replace(/^\/solutions/, '/solutions/team')
+    : '/solutions/team' + (p.startsWith('/') ? p : '/' + p);
 ---
 {PUBLIC ? (
   <p class="gate-note">
-    The build plan, stack, risks, and prototype for this idea are internal.
-    Use the vote above to say it is worth pursuing.
+    The build plan, stack, risks, and app screenshots for this idea are internal.
+    <a href={teamHref}>Team sign-in&nbsp;&rarr;</a>
   </p>
 ) : (
   <section class="team-only">
-    <p class="team-only__tag t-label">Internal — hidden from the public build</p>
+    <p class="team-only__tag t-label">Internal — not shown on the public site</p>
     <slot />
   </section>
 )}

@@ -3,11 +3,11 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 
 // The catalog is served from a sub-path of an existing domain:
-//   https://ismorg.com/solutions
-// `base` makes Astro prefix every generated link and asset with /solutions.
-// nginx maps `location /solutions/` -> this project's `dist/`.
+//   https://ismorg.com/solutions        — public build (PUBLIC_BUILD=1)
+//   https://ismorg.com/solutions/team   — full build (TEAM_BUILD=1), password-gated
+// `base` prefixes every generated link/asset; nginx maps each path to its dir.
 const SITE = 'https://ismorg.com';
-const BASE = '/solutions';
+const BASE = process.env.TEAM_BUILD === '1' ? '/solutions/team' : '/solutions';
 
 export default defineConfig({
   site: SITE,

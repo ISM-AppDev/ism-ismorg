@@ -1,13 +1,12 @@
 # Target state for /etc/nginx/sites-available/ismorg.com
 #
-# `certbot --nginx` (2026-08-27) added the TLS listen lines and the port-80
-# redirect server{} — keep every `# managed by Certbot` line. This file adds:
-#   1. root landing page (served by the existing `root` + `index`)
-#   2. /solutions/      -> the static catalog build, behind HTTP basic-auth
-#   3. /solutions/api/  -> the vote service on 127.0.0.1:4310
+# `certbot --nginx` (2026-08-27) added the TLS listen lines + the port-80
+# redirect server{} — keep every `# managed by Certbot` line.
 #
-# Build output goes to  /var/www/ismorg.com/solutions/  (not html/).
-# Landing page is        /var/www/ismorg.com/html/index.html
+# Solution Ideas is served as two builds:
+#   /solutions/       -> PUBLIC build  (open)          /var/www/ismorg.com/solutions/
+#   /solutions/team/  -> FULL build    (basic-auth)    /var/www/ismorg.com/solutions-team/
+# Both share the vote service on 127.0.0.1:4310.
 #
 # Apply: edit the real file to match the server{} below, then
 #   sudo nginx -t && sudo systemctl reload nginx
@@ -22,9 +21,9 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    # vote service — more specific prefix, wins regardless of order
-    location /solutions/api/ {
-        auth_basic           "Solution Ideas";
+    # ---------- Solution Ideas: TEAM (full) build — password-gated ----------
+    location /solutions/team/api/ {
+        auth_basic           "Solution Ideas — team";
         auth_basic_user_file /etc/nginx/.htpasswd-solutions;
 
         proxy_pass         http://127.0.0.1:4310/api/;
@@ -35,27 +34,36 @@ server {
         proxy_set_header   X-Forwarded-Proto $scheme;
     }
 
-    # static catalog build. `root` (not alias) keeps try_files well-behaved:
-    # /solutions/foo -> /var/www/ismorg.com/solutions/foo
+    location = /solutions/team { return 301 /solutions/team/; }
+    location /solutions/team/ {
+        alias /var/www/ismorg.com/solutions-team/;
+        try_files $uri $uri/index.html $uri/ =404;
+
+        auth_basic           "Solution Ideas — team";
+        auth_basic_user_file /etc/nginx/.htpasswd-solutions;
+        add_header Cache-Control "no-store" always;
+    }
+
+    # ---------- Solution Ideas: PUBLIC build — open ----------
+    location /solutions/api/ {
+        proxy_pass         http://127.0.0.1:4310/api/;
+        proxy_http_version 1.1;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+
     location = /solutions { return 301 /solutions/; }
     location /solutions/ {
         root /var/www/ismorg.com;
         try_files $uri $uri/index.html $uri/ =404;
-
-        auth_basic           "Solution Ideas";
-        auth_basic_user_file /etc/nginx/.htpasswd-solutions;
-
-        # authed HTML — keep Cloudflare and browsers from caching it
         add_header Cache-Control "no-store" always;
     }
-
-    # content-hashed assets: cache hard
     location /solutions/_astro/ {
         root /var/www/ismorg.com;
         try_files $uri =404;
         add_header Cache-Control "public, max-age=31536000, immutable";
-        auth_basic           "Solution Ideas";
-        auth_basic_user_file /etc/nginx/.htpasswd-solutions;
     }
 
     listen [::]:443 ssl; # managed by Certbot

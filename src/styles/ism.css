@@ -166,6 +166,15 @@ hr {
   border: var(--ism-rule) solid var(--ism-crimson-300);
   font-size: 1rem;
 }
+.gate-note a {
+  display: inline-block;
+  margin-left: 6px;
+  font-style: italic;
+  font-weight: 800;
+  color: var(--ism-action);
+  border-bottom: 2px solid var(--ism-crimson-300);
+}
+.gate-note a:hover { border-bottom-color: var(--ism-action); }
 
 /* ----------------------------- rule -------------------------------- */
 .rule {
