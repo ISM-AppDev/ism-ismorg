@@ -1,0 +1,125 @@
+---
+title: Lead Pipeline Diagnostics & Follow-Up Optimizer
+number: 9
+one_liner: Analyzes your lead generation and capture, tells you whether you actually have enough sales-ready pipeline, shows where prospects stall, and hands you the follow-up you're not doing.
+status: spark
+category: Lead Generation
+tags: [impact-intelligence, lead-generation, sales-followup, pipeline, diagnostic]
+effort: L
+target_user: Owners who can't tell if their pipeline is healthy until a dry month arrives
+visibility: internal
+created: 2026-08-27
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Most owners find out their pipeline was thin only when a slow month lands with no warning.
+They are "doing marketing," but they have no read on whether it produces enough sales-ready
+leads for their revenue goal, where in the process prospects go cold, or which follow-up
+they keep skipping. Leads leak out of the gaps between activities and nobody notices.
+
+## What it does
+
+Analyzes the owner's current lead-generation and capture activity, maps it to a simple
+pipeline, and produces a diagnostic:
+
+- Do you have enough sales-ready leads for your goal — and if not, by how much?
+- Which stage has the worst drop-off, and what is likely causing it?
+- Where is follow-up missing or too slow?
+
+Then it recommends specific campaigns and actions to raise lead flow, and provides ready
+follow-up and nurture sequences so no lead is left behind. Diagnostic first; templates
+second.
+
+## Who it is for
+
+Solo owners and small teams running their own lead generation with no RevOps function,
+who need a health check they can act on rather than a dashboard of vanity metrics.
+
+## How it works
+
+1. A tool inside the Impact Intelligence platform, using the shared Business Intelligence
+   Profile (offers, audience, revenue goal, current marketing activities).
+2. The owner describes — or connects — their lead sources and capture points: forms,
+   discovery calls, DMs, events, referrals.
+3. The tool estimates lead volume against the revenue goal (with the owner's close rate and
+   deal size), finds the stages converting worst, and flags where follow-up is absent or
+   delayed.
+4. It returns a diagnostic, a prioritized set of fixes ("your webinar registrants get one
+   email and then nothing"), and drafted follow-up sequences for the biggest gaps.
+5. Stored as a pipeline snapshot so health can be tracked over time and re-checked after
+   changes.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- It answers the question owners are most anxious about — "is my pipeline OK?" — with a
+  number and a reason, not a feeling.
+- The follow-up templates turn a diagnosis into recovered revenue the same week, which
+  makes the value obvious.
+- It is a natural hub: its gap findings can feed the Action Advisor, and its follow-up
+  sequences can drop into Scheduled Posts / email automation.
+- Clear tiering: base = self-reported diagnostic + templates; upgrade = connected data,
+  drop-off analysis, and low-pipeline alerts.
+
+## Build phases
+
+### Phase 1 — Self-reported diagnostic
+Structured intake on sources, rough volumes, close rate, deal size, and current follow-up.
+Compute pipeline math against the goal; return gaps, prioritized fixes, and drafted
+follow-up sequences. Store the snapshot.
+
+### Phase 2 — Connected data
+Light integrations (calendar, a CRM, form tools) to replace estimates with actuals.
+Stage-by-stage drop-off analysis. Alert when projected pipeline falls below the goal.
+
+### Phase 3 — Ongoing optimizer
+A recurring monitor that nudges on specific misses ("3 leads from last week's event never
+got a second touch"), recommends campaigns tuned to what has worked, and hands sequences to
+the publishing/automation layer.
+
+## Stack and dependencies
+
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile
+- Structured intake; optional integrations (Google Calendar, a CRM, form platforms)
+- A pipeline-math model (volume × conversion × deal size vs goal)
+- Anthropic API for the diagnostic narrative, campaign recommendations, and sequence drafts
+- `pipeline_snapshots`, `followup_gaps`, `recommendations` tables
+
+## Open questions and risks
+
+- **Self-reported numbers.** Phase 1 is only as good as the owner's inputs; the intake has
+  to guide honest estimates and flag low confidence.
+- **Integration breadth.** Every CRM and form tool is its own connector — pick two, resist
+  the rest until later.
+- **"Enough leads" is a function of close rate and deal size**, which many owners don't
+  actually know. The tool has to help them estimate those first.
+- **Generic advice risk.** Recommendations must name the specific activity and gap, not
+  "improve your follow-up."
+
+<Prototype label="Pipeline diagnostic" caption="Sample — quarterly goal vs projected, with the biggest leaks.">
+  <div class="mock">
+    <h4>Pipeline Diagnostic — Q2</h4>
+    <p class="tagline">Goal: $180k new revenue · Close rate 22% · Avg deal $9k → need ~91 sales-ready leads/qtr</p>
+    <div class="row"><span><strong>Projected sales-ready leads</strong></span><span class="score">58</span></div>
+    <p>You are tracking ~36% short of goal. Two fixable leaks account for most of it.</p>
+    <h5>Where it's leaking</h5>
+    <ul>
+      <li><strong>Discovery-call no-shows: 41%.</strong> No reminder sequence after booking. Industry norm is ~20%.</li>
+      <li><strong>Webinar registrants → call booked: 4%.</strong> One follow-up email, sent 3 days late.</li>
+    </ul>
+    <h5>Fix first</h5>
+    <ul>
+      <li>Add a 3-touch reminder sequence (24h / 2h / 10min) before discovery calls. Drafted below.</li>
+      <li>Send webinar follow-up within 2 hours, with a booking link and the recording. 4-email sequence drafted.</li>
+    </ul>
+    <div class="btnrow"><span>View drafted sequences</span><span>Save diagnostic</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>

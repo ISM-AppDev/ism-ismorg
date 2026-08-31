@@ -1,0 +1,123 @@
+---
+title: Funnel & Conversion Health Checker
+number: 10
+one_liner: Audits your landing pages, opt-ins, email sequence, and checkout for the friction points quietly killing conversions, and hands back a ranked list of simple fixes.
+status: spark
+category: Marketing & Messaging
+tags: [impact-intelligence, conversion, funnel, website, email, diagnostic]
+effort: M
+target_user: Owners whose traffic doesn't convert and who can't see where it's leaking
+visibility: internal
+created: 2026-08-27
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Traffic arrives, few people convert, and the owner can't tell which page or step is the
+problem. They rewrite headlines on instinct and hope. There is no structured audit of the
+funnel — the sales page, the opt-in, the nurture emails, the booking or checkout step — so
+the same leaks stay unfixed for months.
+
+## What it does
+
+Assesses the main components of the funnel for friction, leaks, and underperformance, and
+flags concrete issues:
+
+- Slow lead response times
+- Unclear, buried, or competing calls to action
+- A mismatch between the ad or link promise and what the page delivers
+- Common abandonment spots and dead ends
+- Missing or weak follow-up after an opt-in
+- Mobile and load-speed problems
+
+For each it gives a plain fix and a best-practice benchmark, and it ranks them so the owner
+knows what to change first.
+
+## Who it is for
+
+Owners running a self-serve or semi-serve funnel — a course, a productized service, a
+booking flow — without a conversion specialist on the team.
+
+## How it works
+
+1. A tool inside the Impact Intelligence platform. The owner points it at their funnel:
+   page URLs plus a short description of the sequence and where traffic comes from.
+2. It reads each page and checks it against a fixed conversion rubric and benchmark set,
+   treating page content as untrusted input, never as instructions.
+3. It cross-references the Business Intelligence Profile — who the page is for, what the
+   offer is, the core promise — to catch audience and message mismatch a generic checker
+   would miss.
+4. It returns per-asset findings, a ranked "fix this first" list, and rewrite suggestions
+   for the worst CTAs and sections.
+5. A flagged page can be handed straight to the Message Market-Fit Checker for a deeper
+   copy diagnostic.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- Conversion is where spent traffic is won or lost; a structured audit pays for itself in
+  one fixed leak.
+- It pairs naturally with Lead Pipeline Diagnostics (that finds the volume gap, this finds
+  the conversion gap) and feeds the Action Advisor.
+- Profile-aware auditing — checking the page against the *stated* audience and promise — is
+  the differentiator over generic "CRO checklist" tools.
+- Tiering: base = one-time audit with fixes; upgrade = benchmarks, re-audits to track
+  improvement, and regression alerts.
+
+## Build phases
+
+### Phase 1 — Page + sequence audit
+Owner supplies URLs and describes the flow. Audit each asset against a fixed rubric; return
+prioritized fixes and CTA/section rewrites. Cross-check against the profile for
+message-audience fit.
+
+### Phase 2 — Benchmarks and inputs
+Owner adds response-time and abandonment data (or a light analytics/tag connection).
+Industry benchmark comparisons. Re-audit on demand to measure whether a fix worked.
+
+### Phase 3 — Continuous watch
+Re-check pages on a schedule; alert on regressions (page changed, load time up, CTA
+removed). Feed "we just changed X" into Scheduled Posts as a content prompt.
+
+## Stack and dependencies
+
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile
+- Page fetch + parse with prompt-injection isolation of fetched content
+- A conversion rubric and an industry benchmark set (build and maintain)
+- Anthropic API for findings and rewrites; structured output per asset
+- `funnel_audits`, `findings` tables
+
+## Open questions and risks
+
+- **Reading a page is not knowing its analytics.** True conversion and bounce data needs an
+  integration or owner input; Phase 1 findings are heuristic and should say so.
+- **Benchmark credibility.** Numbers need a defensible source or they undermine trust.
+- **JS-heavy / gated pages.** Some funnels can't be fetched cleanly; need a graceful
+  "describe it instead" path.
+- **Scope creep** toward being a full analytics product — stay a diagnostic that points at
+  fixes.
+
+<Prototype label="Funnel audit" caption="Sample — four funnel assets scored, with the first fix.">
+  <div class="mock">
+    <h4>Funnel Audit — “Fractional CMO” offer</h4>
+    <p class="tagline">Audience on file: founders of $3–15M B2B service firms · Promise: “a senior marketing leader without the $220k hire”</p>
+    <div class="row"><span>Landing page</span><span class="score">Weak</span></div>
+    <div class="row"><span>Opt-in (guide download)</span><span>OK</span></div>
+    <div class="row"><span>5-email nurture</span><span>Weak</span></div>
+    <div class="row"><span>Calendly booking step</span><span>Good</span></div>
+    <h5>Fix first — landing page</h5>
+    <ul>
+      <li><strong>The CTA is “Learn more,” appearing once, below the fold.</strong> No urgency, no specificity.</li>
+      <li>Rewrite: “Book a 20-min fit call →” in the hero and again after the proof section.</li>
+      <li>The hero talks about your process; the buyer’s promise (“without the $220k hire”) doesn’t appear until paragraph four. Move it up.</li>
+    </ul>
+    <div class="btnrow"><span>Send page to Message Market-Fit Checker</span><span>Save audit</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>

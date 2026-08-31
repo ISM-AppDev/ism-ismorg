@@ -1,0 +1,124 @@
+---
+title: Retention & Referral Opportunity Scanner
+number: 12
+one_liner: Watches your client base for churn signals and referral or expansion openings, and hands you the specific play — and the drafted message — for each one, on a recurring basis.
+status: spark
+category: Customer Relationships & Retention
+tags: [impact-intelligence, retention, referrals, churn, clv, recurring]
+effort: M
+target_user: Owners chasing new leads while quietly losing or under-serving the clients they have
+visibility: internal
+created: 2026-08-27
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Owners pour effort into new acquisition and neglect the cheaper growth already in the
+building — clients who would renew, expand, or refer if asked at the right moment. Churn
+signals go unread until the cancellation email arrives, and the happiest client of the year
+is never asked for an introduction.
+
+## What it does
+
+Continuously reviews the client journey and customer base for two things:
+
+- **Retention risk** — accounts that have gone quiet, dropped usage, have a contract ending,
+  or an unresolved complaint, with the likely reason and a play to address it.
+- **Referral and expansion opportunity** — clients hitting a milestone, getting a great
+  result, long-tenured, or never asked for a referral, with the ask and the timing.
+
+For each it gives a prioritized action and a drafted message or campaign, and it surfaces
+referral-campaign patterns that work in the owner's industry. It re-runs on a schedule so
+the list stays current as the base changes.
+
+## Who it is for
+
+Owners with an existing book of clients — retainer, subscription, or repeat-project — who
+know retention and referrals are cheaper than acquisition but never systematize them.
+
+## How it works
+
+1. A tool inside the Impact Intelligence platform, using the Business Intelligence Profile
+   plus a picture of the client base (stage, tenure, last contact, sentiment) — entered by
+   the owner or connected.
+2. Each cycle it scans for risk signals and opportunity signals across the base.
+3. It produces a ranked list: the client, the signal, why it matters now, the recommended
+   play, and a drafted outreach message or a small campaign.
+4. It pulls referral-campaign examples that fit the owner's industry and model.
+5. Decisions and outcomes are stored, so the scan learns which plays land.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- Retention and referral growth is the highest-margin growth there is, and almost nobody
+  runs it as a system. A recurring scan makes it a habit.
+- It compounds: churn risks and referral wins feed the Action Advisor; drafted outreach
+  drops into the publishing/automation layer.
+- The recurring, base-aware nature is the retention hook for the product itself — the list
+  is only useful if it keeps running.
+- Tiering: base = manual client list + recurring scan + drafted plays; upgrade = connected
+  signals (usage, billing, meetings), churn scoring, and triggered automation.
+
+## Build phases
+
+### Phase 1 — Manual base + recurring scan
+Owner enters the client list with a few fields. A recurring scan against a fixed set of
+risk and opportunity signals; prioritized actions with drafted outreach; industry
+referral-campaign examples.
+
+### Phase 2 — Connected signals
+Light integrations (CRM, billing/Stripe, calendar) for real signals — usage trends,
+payment status, meeting cadence. A churn-risk score with a reason. A referral-campaign
+builder.
+
+### Phase 3 — Triggered plays
+Fire the play automatically on a signal (send the email, create the task, trigger a gift).
+Track retention and referral outcomes. Feed wins back into a pattern library the scan
+learns from.
+
+## Stack and dependencies
+
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile
+- A client-base store — manual entry first, then integrations (CRM / Stripe / calendar)
+- A signal-scoring model for churn risk and opportunity
+- Anthropic API for plays, drafted messages, and industry-pattern research
+- `clients`, `retention_signals`, `referral_campaigns` tables
+- Scheduler / job runner (shared); publishing/automation layer for Phase 3
+
+## Open questions and risks
+
+- **Data quality.** Without integrations the scan is only as good as what the owner enters,
+  and owners won't maintain a big manual list — keep Phase 1 fields minimal.
+- **Churn scoring needs history.** A score with no track record isn't credible; early
+  versions should present signals, not a confident probability.
+- **"Campaigns from your industry"** has to be specific and real, not a generic "ask for
+  referrals" — this is where the tool earns trust or loses it.
+- **Client-data privacy.** Names and account details are sensitive; be careful what goes
+  into research prompts.
+
+<Prototype label="This month's scan" caption="Sample — two risks, two opportunities.">
+  <div class="mock">
+    <h4>Retention & Referral Scan — March</h4>
+    <p class="tagline">Base: 14 active clients · 2 flagged at risk · 2 referral openings</p>
+
+    <h5>At risk</h5>
+    <ul>
+      <li><strong>Harbor Logistics</strong> — no meeting in 7 weeks (was biweekly), last email unanswered. Contract renews in 6 weeks. <em>Play:</em> a “where are we” check-in from you, not the account manager. Drafted.</li>
+      <li><strong>Vance & Co</strong> — logged a complaint about reporting in Feb, marked resolved, no follow-up since. <em>Play:</em> proactive “here's what changed” note + a short call offer.</li>
+    </ul>
+
+    <h5>Referral / expansion openings</h5>
+    <ul>
+      <li><strong>Delta Health</strong> — hit a 30% pipeline lift last quarter (your result), 14 months tenure, never asked for a referral. <em>Ask:</em> “Who else in your network is wrestling with this?” — drafted, tied to the result.</li>
+      <li><strong>Northwind</strong> — using 1 of 3 service lines they pay for. <em>Play:</em> a usage-based nudge toward the unused lines.</li>
+    </ul>
+    <div class="btnrow"><span>Open drafted outreach</span><span>Dismiss an item</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>

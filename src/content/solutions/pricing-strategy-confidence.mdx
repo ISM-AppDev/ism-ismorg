@@ -1,0 +1,118 @@
+---
+title: Pricing Strategy & Confidence Tool
+number: 11
+one_liner: Reviews how you price, package, and discount, gives you market and competitor benchmarks, and hands you defensible test price points so pricing stops being a guess wrapped in anxiety.
+status: spark
+category: Offers & Pricing
+tags: [impact-intelligence, pricing, packaging, benchmarks, decision-support]
+effort: M
+target_user: Owners who under-charge, discount reflexively, or freeze on pricing decisions
+visibility: internal
+created: 2026-08-27
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Pricing is guesswork wrapped in anxiety. Owners anchor to the number they charged three
+years ago, knock 20% off the moment a prospect pauses, and have no read on where the market
+actually sits or what their results justify. The fear of quoting too high keeps them
+quoting too low.
+
+## What it does
+
+Reviews the way the owner prices, packages, and discounts their offers, and helps optimize
+it:
+
+- Market and competitor benchmarks for comparable offers
+- Value-based adjustment suggestions tied to the outcome the offer delivers
+- Recommended "test" price points, each with a rationale
+- A flag on reflexive discounting patterns
+
+The goal is a number the owner can say out loud without flinching, and a way to test it
+rather than bet the business on it.
+
+## Who it is for
+
+Service providers, consultants, coaches, and productized-service owners setting a price for
+a new offer or working up the nerve to raise an existing one.
+
+## How it works
+
+1. A tool inside the Impact Intelligence platform, using the Business Intelligence Profile
+   (offers, deliverables, audience, positioning, results/proof).
+2. The owner picks an offer to review.
+3. The tool gathers comparable market and competitor pricing (current research), maps the
+   offer's value drivers, and proposes two or three options — hold, raise, restructure —
+   each with reasoning, the buyer objection it invites, and a way to test it.
+4. It flags discounting habits it can see in the offer history.
+5. The review is stored so a later price change can be compared against its actual result.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- Pricing is the single highest-leverage number in the business and the one owners are most
+  afraid to touch. A tool that gives cover to raise it earns its keep immediately.
+- It complements the Offer Strength Analyzer (that judges whether the offer is strong; this
+  judges whether it's priced right) and feeds pricing context to What Should I Promote.
+- Benchmarks + a test framework is what turns "I think I'm too cheap" into an action.
+- Tiering: base = profile-based review with known benchmarks; upgrade = live competitor
+  research, package restructuring, and test tracking.
+
+## Build phases
+
+### Phase 1 — Single-offer review
+Review one offer against the profile and a manually curated benchmark set. Value-based
+recommendation, two or three test price points, objection handling. No live research yet.
+
+### Phase 2 — Live benchmarks and packaging
+Current market/competitor research with cited sources. Package restructuring options (tiers,
+scope changes, payment terms). Portfolio view — is this offer priced sensibly relative to
+the owner's others.
+
+### Phase 3 — Test tracking
+Record a price change and its outcome (close rate, revenue, objections heard). Learn the
+owner's real floor. Feed pricing context into the Offer Strength Analyzer and Action
+Advisor.
+
+## Stack and dependencies
+
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile
+- Shared research layer with source tracking (also used by other Intelligence tools)
+- Anthropic API for the analysis and the options; structured output
+- `pricing_reviews`, `price_tests` tables
+
+## Open questions and risks
+
+- **Advice boundary.** This must stay "here's the case and how to test it," never "charge
+  $X and you'll be fine." Keep it out of prescriptive financial advice.
+- **Benchmark comparability.** Two offers with the same name can be wildly different in
+  scope; the research has to normalize for that or it misleads.
+- **Missing cost data.** True value-based pricing needs the owner's margins and delivery
+  cost, which many don't track — the tool has to work without them and say what it's
+  assuming.
+- **Tone.** The user is anxious. A blunt "you're 40% underpriced" without a path forward
+  makes it worse.
+
+<Prototype label="Pricing review" caption="Sample — one offer, three options.">
+  <div class="mock">
+    <h4>Pricing Review — “90-Day Brand Sprint”</h4>
+    <p class="tagline">Current: $6,000 flat · Audience: funded seed-stage startups · Deliverable: positioning, messaging, visual identity, launch kit</p>
+    <div class="row"><span><strong>Market range (comparable sprints)</strong></span><span>$8,500 – $18,000</span></div>
+    <p>You are at or below the floor for this buyer, who is not price-sensitive at seed stage and reads a low number as low seniority.</p>
+    <h5>Options</h5>
+    <ul>
+      <li><strong>Hold at $6,000</strong> — only if you need portfolio pieces right now. Objection it invites: “is this person senior enough?”</li>
+      <li><strong>Raise to $9,500</strong> — mid-market floor, still an easy yes for funded startups. Test: quote it to the next 3 leads, keep everything else the same.</li>
+      <li><strong>Restructure to $12,000 in two phases</strong> — strategy ($5k) then execution ($7k). Lowers the commitment, raises the total. Test with one client.</li>
+    </ul>
+    <p class="tagline">Discounting note: 4 of your last 6 proposals closed at 10–15% off list. That’s a list-price problem, not a discount problem.</p>
+    <div class="btnrow"><span>Start a price test</span><span>Save review</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>

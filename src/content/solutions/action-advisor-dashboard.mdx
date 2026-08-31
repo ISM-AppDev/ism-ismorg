@@ -1,0 +1,117 @@
+---
+title: Action Advisor & What to Focus On Now Dashboard
+number: 13
+one_liner: Pulls the findings from every other Impact Intelligence tool together and names the single highest-leverage thing to work on this week, plus the exact action to take today.
+status: spark
+category: Market Intelligence
+tags: [impact-intelligence, decision-support, dashboard, prioritization, recurring]
+effort: M
+target_user: Owners drowning in options who need one clear next move each week
+visibility: internal
+created: 2026-08-27
+updated: 2026-08-27
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Every tool hands the owner more to do. What they lack is the answer to one question: *of
+everything I could work on, what actually moves the needle this week?* Insight without
+prioritization is just a longer to-do list, and a longer to-do list is why owners freeze.
+
+## What it does
+
+Synthesizes the latest findings and open recommendations from across the Impact
+Intelligence tools — pipeline gaps, funnel leaks, pricing, retention risks, message fit,
+audience shifts — and each week:
+
+- Names the **single highest-leverage area** to focus on
+- Gives the **one concrete action to take today**
+- Explains **why this, why now**
+- Links straight into the tool that does the work
+
+A deliberately small dashboard: one priority, one action, the reasoning, and a way to act
+on it — so the owner always knows the next most important move even when the week is noisy.
+
+## Who it is for
+
+Owners running Impact Intelligence with several tools producing findings and no time to sit
+down and reconcile them into a plan.
+
+## How it works
+
+1. A capability inside the Impact Intelligence platform that reads the current outputs and
+   open recommendations from every other tool, plus the Business Intelligence Profile and
+   the owner's stated goal.
+2. It scores candidate actions by expected impact, effort, and urgency against that goal.
+3. It picks one, and presents it as: *Focus on X. Why: … Do this today: … → open [tool].*
+4. It runs weekly, remembers what it recommended and whether it was done, and adjusts —
+   surfacing important-but-ignored items again rather than repeating itself.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- It is the payoff layer for the whole platform: the individual tools produce insight, this
+  turns the pile of insight into a single decision.
+- Weekly "here's your one move" is a strong retention mechanic — it's a reason to log in
+  every week, and its usefulness grows as more tools feed it.
+- It closes the loop: tracking whether the recommended action got done and what happened is
+  the data that makes every other tool smarter over time.
+- Tiering: base = aggregated list + this-week pick; upgrade = scoring against the goal,
+  carry-over logic, weekly email, and outcome tracking.
+
+## Build phases
+
+### Phase 1 — Aggregated focus
+Collect open recommendations from the other tools into one ranked list. Surface a single
+"this week" pick with a next action and a link into the relevant tool. Manual "done / skip."
+
+### Phase 2 — Scored and delivered
+Impact / effort / urgency scoring against the stated goal. "Why now" reasoning. Carry-over
+logic so ignored-but-important items resurface. A weekly email digest.
+
+### Phase 3 — Closed loop
+Track the outcomes of completed actions. Learn the owner's follow-through patterns and
+preferences and tune the ranking. Optional Slack or email delivery.
+
+## Stack and dependencies
+
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile
+- Read access to every other tool's recommendation store (a shared contract for "open
+  recommendations")
+- A scoring model (impact × urgency ÷ effort, weighted by goal alignment)
+- Anthropic API for the synthesis and the "why now" rationale
+- `focus_recommendations`, `action_log` tables
+- Scheduler / job runner (shared); email delivery (Resend) for Phase 2
+
+## Open questions and risks
+
+- **Only as good as its inputs.** With one tool in use it has nothing to synthesize —
+  needs a sensible fallback and a nudge to adopt more tools.
+- **"One thing" can feel reductive** if the reasoning isn't visible. The *why* has to be as
+  prominent as the *what*.
+- **Repetition.** Recommending the same area every week (because it's genuinely the
+  biggest) will feel broken — needs progress tracking and a way to say "still #1, here's the
+  next step within it."
+- **Overlap with What Should I Promote.** That tool is promotion-specific; this one is
+  whole-business. Keep the boundary explicit or they'll seem redundant.
+
+<Prototype label="This week's focus" caption="Sample dashboard — one priority, one action.">
+  <div class="mock">
+    <h4>What to Focus On Now — week of Mar 10</h4>
+    <p class="tagline">Goal on file: hit $180k new revenue this quarter · 3 tools reporting</p>
+
+    <h5>Focus: fix the discovery-call no-show rate</h5>
+    <p><strong>Why this, why now:</strong> Lead Pipeline Diagnostics has you 36% short of the quarterly goal, and a 41% call no-show rate is the biggest single cause. It's also the fastest to fix — a reminder sequence, not a new campaign.</p>
+    <p><strong>Do this today:</strong> turn on the drafted 3-touch reminder sequence (24h / 2h / 10min) for all booked calls. <em>→ open Lead Pipeline Diagnostics</em></p>
+
+    <p class="tagline">Also watching: “Brand Sprint” is priced ~30% below market (Pricing tool) — worth a test next week, not this one.</p>
+    <p class="tagline">Last week you did: shortened the opt-in form. Result: opt-in rate 3.1% → 4.4%.</p>
+    <div class="btnrow"><span>Mark done</span><span>Snooze to next week</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>
