@@ -98,7 +98,6 @@ const categories = CATEGORIES.filter((c) => present.has(c));
       gap: var(--ism-space-3);
     }
     .grid__empty { padding: var(--ism-space-6) 0; }
-    [data-card][hidden] { display: none; }
   </style>
 
   <script>
@@ -125,7 +124,10 @@ const categories = CATEGORIES.filter((c) => present.has(c));
           const matchCat = !activeCategory || card.dataset.category === activeCategory;
           const matchQuery = !query || (card.dataset.search ?? '').includes(query);
           const show = matchCat && matchQuery;
-          card.hidden = !show;
+          // inline style beats the scoped `.card { display: flex }` rule —
+          // relying on the [hidden] attribute here does not (Astro scopes the
+          // override selector to this page's cid, not the card component's).
+          card.style.display = show ? '' : 'none';
           if (show) visible++;
         }
         countEl.textContent = `${visible} idea${visible === 1 ? '' : 's'}`;
