@@ -2,7 +2,7 @@
 title: What Should I Promote?
 number: 5
 one_liner: Of everything the owner could market right now, a decision on where to point their attention — with the reason, the angle, and the audience.
-status: exploring
+status: building
 category: Marketing & Messaging
 tags: [impact-intelligence, intelligence, decision-support, ai]
 effort: M
@@ -10,9 +10,15 @@ target_user: Owners with several offers and limited attention
 visibility: internal
 created: 2026-08-25
 updated: 2026-08-27
+images:
+  - src: shots/what-should-i-promote/1.svg
+    alt: "What Should I Promote recommendation screen"
+    caption: "This period's recommendation — first-pass build"
+  - src: shots/what-should-i-promote/2.svg
+    alt: "What Should I Promote reasoning and secondary pick"
+    caption: "Why now, plus the secondary option"
 ---
 
-import Prototype from '../../components/Prototype.astro';
 import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
@@ -95,22 +101,5 @@ running — deprioritize it?").
   timing is in the mix.
 - **Override handling.** Learning from overrides is powerful but easy to get creepy — keep
   it transparent.
-
-<Prototype label="Monthly recommendation" caption="Sample output for a leadership coach with four offers.">
-  <div class="mock">
-    <h4>What Should I Promote? — April</h4>
-
-    <h5>Promote this</h5>
-    <p><strong>“Team Offsite Facilitation” — 2-day package</strong></p>
-    <p><strong>Why now:</strong> Q2 is when companies plan H2 and book offsites; you last promoted it 11 months ago; and Audience Pulse flagged rising talk of “re-aligning hybrid teams” in your audience. The 1:1 coaching program was promoted in March — too soon to repeat.</p>
-    <div class="row"><span>Angle</span><span>“Your H2 plan is only as good as the room you make it in.”</span></div>
-    <div class="row"><span>Segment</span><span>People leaders at 100–500-person companies, post-reorg</span></div>
-    <div class="row"><span>CTA</span><span>Book a 20-min offsite planning call</span></div>
-
-    <h5>Secondary (if you have bandwidth)</h5>
-    <p>Re-run the “First 90 Days” workshop — evergreen, and hiring picks up in spring.</p>
-    <div class="btnrow"><span>Use this</span><span>Pick a different offer</span></div>
-  </div>
-</Prototype>
 
 </TeamOnly>
