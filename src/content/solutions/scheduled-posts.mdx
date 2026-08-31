@@ -47,8 +47,9 @@ rebuilding a dormant profile who needs momentum without a content sprint.
 
 ## How it works
 
-1. Ships as a tool in SOTS Connect, using shared auth and the shared business profile. On
-   first run it ingests the owner's recent posts to learn cadence, structure, and voice.
+1. A tool in the **Impact Intelligence** platform, using shared auth and the Business
+   Intelligence Profile. On first run it ingests the owner's recent posts to learn cadence,
+   structure, and voice.
 2. The owner sets a schedule (e.g. Tue/Thu 8am) and a rough mix — how much teaching vs story vs
    offer vs opinion.
 3. A generation pass fills the queue two to three weeks out. Each draft carries its source
@@ -98,7 +99,7 @@ losing the queue.
 
 ## Stack and dependencies
 
-- SOTS Connect shell, auth, entitlement gate, shared profile (voice, positioning, offers, priorities)
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile (voice, positioning, offers, priorities)
 - Past-post ingestion + a stored voice profile (shared with other content tools)
 - Anthropic API for drafting; structured drafts with angle + confidence metadata
 - `scheduled_posts` table: draft, status (drafted / approved / scheduled / published / skipped), scheduled_at, cadence_slot_id, source angle, performance — the calendar view reads from this

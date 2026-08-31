@@ -1,0 +1,46 @@
+---
+/**
+ * Sticky image rail for the detail page — screenshots of the real (first-pass)
+ * app. Rendered only when an idea has `images` in its frontmatter.
+ */
+interface ShotImage {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+interface Props {
+  images: ShotImage[];
+  label?: string;
+}
+const { images, label = 'First-pass app' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const url = (src: string) => `${base}/${src.replace(/^\//, '')}`;
+---
+<div class="shots">
+  <p class="shots__label t-label t-crimson">{label}</p>
+  <div class="shots__stack">
+    {images.map((img) => (
+      <figure class="shots__item">
+        <a href={url(img.src)} target="_blank" rel="noopener" aria-label={`Open full size: ${img.alt}`}>
+          <img src={url(img.src)} alt={img.alt} loading="lazy" decoding="async" />
+        </a>
+        {img.caption && <figcaption class="t-caption t-muted">{img.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+</div>
+
+<style>
+  .shots__label { display: block; margin-bottom: var(--ism-space-2); }
+  .shots__stack { display: flex; flex-direction: column; gap: var(--ism-space-3); }
+  .shots__item { margin: 0; }
+  .shots__item img {
+    width: 100%;
+    border: var(--ism-rule) solid var(--ism-text);
+    background: var(--ism-bg);
+    display: block;
+  }
+  .shots__item a { display: block; }
+  .shots__item a:hover img { border-color: var(--ism-action); }
+  .shots__item figcaption { margin-top: 8px; }
+</style>

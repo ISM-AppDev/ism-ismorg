@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 860" font-family="Archivo, Helvetica, Arial, sans-serif">
+  <rect width="1280" height="860" fill="#f6f2f2"/>
+  <rect x="2" y="2" width="1276" height="856" fill="#ffffff" stroke="#201e1d" stroke-width="4"/>
+  <rect x="2" y="2" width="1276" height="70" fill="#201e1d"/>
+  <text x="36" y="48" fill="#ffffff" font-size="24" font-weight="900" font-style="italic">ISM</text>
+  <text x="120" y="48" fill="#ffffff" font-size="22" font-weight="700">Message Market-Fit Checker</text>
+  <text x="36" y="150" fill="#bc2534" font-size="15" font-weight="700" letter-spacing="4">FIRST-PASS APP</text>
+  <text x="36" y="210" fill="#201e1d" font-size="40" font-weight="800" font-style="italic">Diagnostic result</text>
+  <text x="36" y="270" fill="#959191" font-size="20">Screenshot to be added from staging.intel.impactsystemmarketing.com</text>
+  <rect x="36" y="320" width="1208" height="2" fill="#d8d5d4"/>
+  <rect x="36" y="360" width="760" height="26" fill="#d8d5d4"/>
+  <rect x="36" y="404" width="1120" height="18" fill="#e9e6e5"/>
+  <rect x="36" y="432" width="1080" height="18" fill="#e9e6e5"/>
+  <rect x="36" y="460" width="900" height="18" fill="#e9e6e5"/>
+  <rect x="36" y="520" width="300" height="26" fill="#f9a3a0"/>
+  <rect x="36" y="560" width="1120" height="18" fill="#e9e6e5"/>
+  <rect x="36" y="588" width="1000" height="18" fill="#e9e6e5"/>
+  <rect x="36" y="672" width="220" height="52" fill="#bc2534"/>
+  <text x="60" y="705" fill="#ffffff" font-size="16" font-weight="700" font-style="italic">PRIMARY ACTION</text>
+  <rect x="272" y="672" width="180" height="52" fill="#ffffff" stroke="#201e1d" stroke-width="3"/>
+</svg>

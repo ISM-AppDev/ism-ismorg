@@ -4,9 +4,9 @@ number: 4
 one_liner: A recurring read on what is changing with the owner's market and audience, and whether it should change how they communicate.
 status: exploring
 category: Market Intelligence
-tags: [business-growth-advisor, sots-connect, intelligence, research, ai, recurring]
+tags: [impact-intelligence, intelligence, research, ai, recurring]
 effort: L
-target_user: Owners on the Intelligence tier who want to stay ahead of their market
+target_user: Owners on the higher Impact Intelligence tiers who want to stay ahead of their market
 visibility: internal
 created: 2026-08-25
 updated: 2026-08-27
@@ -42,12 +42,12 @@ implications. The guiding distinction: Audience Pulse answers *"what should I kn
 
 ## Who it is for
 
-Intelligence-tier owners — typically a bit more established, marketing actively, and willing
+Owners on the higher Impact Intelligence tiers — typically a bit more established, marketing actively, and willing
 to pay for a standing advantage rather than one-off tools.
 
 ## How it works
 
-1. An Intelligence-tier capability inside **Business Growth Advisor**. Requires the upgrade.
+1. A capability in **Impact Intelligence**, on the higher plan tiers.
 2. Uses the shared profile (audience, segments, problems, offers, positioning) to keep
    research narrow and specific to the business.
 3. A modular research layer gathers current external signals with source tracking, then the
@@ -55,13 +55,13 @@ to pay for a standing advantage rather than one-off tools.
 4. Findings are stored with timestamps and sources. Each cycle compares against the last so
    the report can flag *new since last time* vs *still true* vs *fading*.
 5. Findings feed other tools: audience language → Message Market-Fit Checker; concerns and
-   objections → What Should I Promote? and the Intelligence Brief.
+   objections → What Should I Promote? and the Impact Intelligence Brief.
 
 <TeamOnly>
 
 ## Why it is worth building
 
-- It is the core of the Intelligence tier's value: the product keeps working when the owner
+- It is the core of the higher tiers' value: the product keeps working when the owner
   isn't logged in.
 - It compounds. A stored history of what changed becomes something a competitor's generic
   tool can't replicate.
@@ -80,14 +80,14 @@ Weekly/monthly schedule. Historical storage and a diff against the prior cycle
 ("new / still important / fading / no longer significant"). Duplicate suppression.
 
 ### Phase 3 — Wired into the suite
-Push findings to Message Market-Fit Checker, What Should I Promote?, and the Business Growth
+Push findings to Message Market-Fit Checker, What Should I Promote?, and the Impact
 Intelligence Brief. Add competitor-signal monitoring and emerging-buyer-language extraction
 as sub-modules. Off-cycle alerts for high-threshold events.
 
 ## Stack and dependencies
 
-- SOTS Connect shell, auth, **Intelligence entitlement gate**, shared profile
-- A reusable research/validation layer with source + freshness tracking (shared with the Intelligence Brief)
+- Impact Intelligence shell, auth, **higher-tier entitlement gate**, Business Intelligence Profile
+- A reusable research/validation layer with source + freshness tracking (shared with the Impact Intelligence Brief)
 - Anthropic API for interpretation; strict separation of sourced fact vs AI inference
 - `audience_pulse_reports` + `research_findings` tables; `previously_reported_findings` for de-dup
 - Scheduler / job runner (shared with Scheduled Report Jobs)
@@ -102,7 +102,7 @@ as sub-modules. Off-cycle alerts for high-threshold events.
   you* translation. That's where the value or the disappointment lives.
 - **Cadence.** Weekly may be too noisy for slow markets; monthly too slow for fast ones.
   Per-user configurable.
-- **Overlap with the Intelligence Brief.** Pulse is the research engine; the Brief is the
+- **Overlap with the Impact Intelligence Brief.** Pulse is the research engine; the Brief is the
   packaged deliverable. Keep the boundary clear or they cannibalize each other.
 
 <Prototype label="Monthly pulse" caption="Sample section — one finding — for a B2B SaaS consultant.">

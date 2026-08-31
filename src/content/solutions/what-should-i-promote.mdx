@@ -4,7 +4,7 @@ number: 5
 one_liner: Of everything the owner could market right now, a decision on where to point their attention — with the reason, the angle, and the audience.
 status: exploring
 category: Marketing & Messaging
-tags: [business-growth-advisor, sots-connect, intelligence, decision-support, ai]
+tags: [impact-intelligence, intelligence, decision-support, ai]
 effort: M
 target_user: Owners with several offers and limited attention
 visibility: internal
@@ -39,25 +39,25 @@ can act on it or overrule it.
 
 ## Who it is for
 
-Intelligence-tier owners with three-plus live offers who keep second-guessing their focus.
+Owners on the higher Impact Intelligence tiers with three-plus live offers who keep second-guessing their focus.
 Best used monthly, or whenever a launch window opens.
 
 ## How it works
 
-1. An Intelligence-tier tool inside **Business Growth Advisor**.
+1. A tool in **Impact Intelligence**, on the higher plan tiers.
 2. Reads the offer portfolio, priorities, recent promotion history, and calendar from the
    shared profile.
 3. Pulls the latest Audience Pulse findings for current market context.
 4. The model scores each candidate promotion on timing, audience readiness, portfolio fit,
    and goal alignment, then recommends one (or two) with reasoning.
-5. The recommendation is stored as a `promotion_recommendation`; the Intelligence Brief can
+5. The recommendation is stored as a `promotion_recommendation`; the Impact Intelligence Brief can
    carry it forward and check whether the owner acted.
 
 <TeamOnly>
 
 ## Why it is worth building
 
-- It's the connective tissue of the Intelligence tier — it consumes Audience Pulse and the
+- It's the connective tissue of the higher tiers — it consumes Audience Pulse and the
   portfolio and produces a single next action.
 - It answers a question owners actually ask out loud, in plain language, which makes the
   value obvious and easy to sell.
@@ -75,13 +75,13 @@ Ingest Audience Pulse findings as a timing input. Add "why now" grounded in curr
 Optional secondary recommendation.
 
 ### Phase 3 — Closed loop
-Feed the recommendation into the Intelligence Brief. Track acted / ignored. Learn the
+Feed the recommendation into the Impact Intelligence Brief. Track acted / ignored. Learn the
 owner's overrides over time and reflect them back ("you've skipped the course three months
 running — deprioritize it?").
 
 ## Stack and dependencies
 
-- SOTS Connect shell, auth, **Intelligence entitlement gate**, shared profile (offers, priorities, promotion history, events)
+- Impact Intelligence shell, auth, **higher-tier entitlement gate**, Business Intelligence Profile (offers, priorities, promotion history, events)
 - Anthropic API; structured output for the recommendation card
 - `promotion_recommendations` table: candidate set, scores, chosen promotion, reasoning, acted flag, timestamp
 - Depends on Audience Pulse for the market-timing input (Phase 2+)

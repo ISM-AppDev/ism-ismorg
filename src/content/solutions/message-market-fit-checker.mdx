@@ -2,17 +2,23 @@
 title: Message Market-Fit Checker
 number: 1
 one_liner: Paste in any piece of marketing copy and get a diagnostic on whether it will land with the audience you are trying to reach.
-status: prototyping
+status: building
 category: Marketing & Messaging
-tags: [business-growth-advisor, sots-connect, diagnostic, copywriting, ai]
+tags: [impact-intelligence, diagnostic, copywriting, ai]
 effort: M
 target_user: Small-business owners and solo marketers writing their own copy
 visibility: internal
 created: 2026-08-25
 updated: 2026-08-27
+images:
+  - src: shots/message-market-fit-checker/1.svg
+    alt: Message Market-Fit Checker diagnostic result screen
+    caption: Diagnostic result — first-pass build
+  - src: shots/message-market-fit-checker/2.svg
+    alt: Message Market-Fit Checker revised-copy screen
+    caption: Revised version, offered after the diagnostic
 ---
 
-import Prototype from '../../components/Prototype.astro';
 import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
@@ -49,27 +55,27 @@ pass on a client draft.
 
 ## How it works
 
-1. Ships as a tool inside **Business Growth Advisor**, a sellable application within SOTS
-   Connect. It reuses SOTS Connect auth and the shared business profile — no separate login,
-   no re-entering the audience each time.
+1. A tool in the **Impact Intelligence** platform. It uses the platform's auth and the
+   shared Business Intelligence Profile — no separate login, no re-entering the audience
+   each time.
 2. On first use, if the profile is thin, it asks only for what this diagnostic needs
    (primary audience, their top problems, the offer this copy points to) and saves those
    answers back to the shared profile for the other tools to use.
 3. The user pastes copy and picks the format (email / post / headline / page / ad / pitch).
 4. The model runs the diagnostic against stored audience + positioning, returns prioritized
    strengths and weaknesses with concrete rewrites for the weak spots.
-5. Each run is stored so later tools (and the Intelligence Brief) can reference "you tested
+5. Each run is stored so later tools (and the Impact Intelligence Brief) can reference "you tested
    this message on 12 Aug and the weak point was the CTA."
 
 <TeamOnly>
 
 ## Why it is worth building
 
-- It is the lowest-friction entry point of the whole Business Growth Advisor suite: paste,
+- It is the lowest-friction entry point of the whole Impact Intelligence tool set: paste,
   get value in ten seconds, no setup.
 - It creates a habit loop — owners write copy constantly, so they come back constantly.
 - It feeds the rest of the system. Audience-language findings flow into Audience Pulse; a
-  weak CTA pattern across many runs is a signal for the Intelligence Brief.
+  weak CTA pattern across many runs is a signal for the Impact Intelligence Brief.
 - The diagnostic framing is the differentiator. Every AI writing tool rewrites; almost none
   tell you whether the message was right in the first place.
 
@@ -81,7 +87,7 @@ minimal audience/positioning object. Prioritized strengths/weaknesses + targeted
 Store each run. No cross-tool wiring yet.
 
 ### Phase 2 — Profile-aware
-Pull audience, positioning, offers, and objections from the shared SOTS Connect profile.
+Pull audience, positioning, offers, and objections from the Business Intelligence Profile.
 Progressive profiling for missing fields. "Compare against a specific offer" option.
 
 ### Phase 3 — Cross-tool
@@ -91,7 +97,7 @@ Optional: score trend over time so the owner can see their copy improving.
 
 ## Stack and dependencies
 
-- SOTS Connect app shell, auth, entitlement gate, shared business-profile schema
+- Impact Intelligence app shell, auth, entitlement gate, Business Intelligence Profile schema
 - Anthropic API for the diagnostic; structured output so strengths/weaknesses render as data
 - `message_analyses` table: input copy, format, verdicts, recommendations, model metadata, timestamp
 - No external research required — operates entirely on user-provided copy + stored profile
@@ -104,29 +110,6 @@ Optional: score trend over time so the owner can see their copy improving.
   sharp, not like a form.
 - **Consistency.** Two runs of similar copy should not give wildly different scores —
   needs a fixed rubric in the prompt and some evaluation before launch.
-- **Entitlement.** Base Business Growth Advisor tool, so it must work without the
-  Intelligence upgrade.
-
-<Prototype label="Diagnostic result" caption="Sample output for a pasted LinkedIn post.">
-  <div class="mock">
-    <h4>Message Market-Fit Checker</h4>
-    <p class="tagline">Format: LinkedIn post &nbsp;·&nbsp; Compared against: “Fractional COO for $2–10M service firms”</p>
-    <div class="row"><span><strong>Overall fit</strong></span><span class="score">Weak</span></div>
-    <h5>Biggest problem</h5>
-    <p>The post talks about <em>your</em> process (“my 5-pillar system”). The buyer cares about the outcome — fewer fires, a team that runs without them. Nothing here names a problem they lie awake about.</p>
-    <h5>What is working</h5>
-    <ul>
-      <li>Specific audience callout in line one (“$2–10M service firms”)</li>
-      <li>Short sentences, easy to scan on mobile</li>
-    </ul>
-    <h5>Fix first</h5>
-    <ul>
-      <li>Open with the owner’s problem in their words: “You’re the bottleneck and you know it.”</li>
-      <li>Cut the 5-pillar list. One proof point beats a framework here.</li>
-      <li>CTA is “DM me” — too vague. Try “Comment ‘COO’ and I’ll send the 90-day plan.”</li>
-    </ul>
-    <div class="btnrow"><span>See rewritten version</span><span>Save analysis</span></div>
-  </div>
-</Prototype>
+- **Entitlement.** Entry-plan tool, so it must work without the higher-tier features.
 
 </TeamOnly>

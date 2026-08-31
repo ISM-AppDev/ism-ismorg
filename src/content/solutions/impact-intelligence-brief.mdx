@@ -1,12 +1,12 @@
 ---
-title: Business Growth Intelligence Brief
+title: Impact Intelligence Brief
 number: 6
 one_liner: A recurring, personalized brief delivered to the owner's inbox that says what changed for their specific business and what to do about it.
 status: exploring
 category: Market Intelligence
-tags: [business-growth-advisor, sots-connect, intelligence, email, recurring, ai]
+tags: [impact-intelligence, intelligence, email, recurring, ai]
 effort: L
-target_user: Intelligence-tier owners who want the product to come to them
+target_user: higher-tier owners who want the product to come to them
 visibility: internal
 created: 2026-08-25
 updated: 2026-08-27
@@ -18,14 +18,14 @@ import TeamOnly from '../../components/TeamOnly.astro';
 ## The problem
 
 Even good tools only help when the owner remembers to open them. Between busy weeks, the
-Business Growth Advisor suite sits unused and the subscription starts to feel optional. And
+Impact Intelligence tool set sits unused and the subscription starts to feel optional. And
 the intelligence that would actually move the needle — what changed for *this* business's
 audience and offers — never gets assembled unless someone sits down to assemble it.
 
 ## What it does
 
-The Business Growth Intelligence Brief is a recurring email (weekly, biweekly, or monthly,
-owner's choice) that combines the shared profile, prior Business Growth Advisor findings,
+The Impact Intelligence Brief is a recurring email (weekly, biweekly, or monthly,
+owner's choice) that combines the Business Intelligence Profile, prior Impact Intelligence findings,
 the latest Audience Pulse research, and fresh external validation for that cycle into one
 short executive-style brief. It answers a single question: **what changed or matters for my
 business, audience, offers, and marketing decisions right now?**
@@ -44,13 +44,12 @@ from AI interpretation, with timestamps and references.
 
 ## Who it is for
 
-Intelligence-tier owners. This feature is the reason the tier is a subscription rather than
+Owners on the higher Impact Intelligence tiers. This feature is the reason Impact Intelligence is a subscription rather than
 a pack of tools — it's the proactive layer.
 
 ## How it works
 
-1. **Intelligence-tier only** capability inside Business Growth Advisor. Not available on the
-   base entitlement.
+1. A **higher-tier** capability in Impact Intelligence. Not available on the entry plan.
 2. The owner sets a delivery frequency; the architecture supports adding frequencies later
    without schema changes.
 3. On each cycle a scheduled job assembles inputs: shared profile, recent tool runs,
@@ -66,7 +65,7 @@ a pack of tools — it's the proactive layer.
 
 ## Why it is worth building
 
-- It is the front door of the Intelligence tier. The brief identifies what deserves
+- It is the front door of the higher tiers. The brief identifies what deserves
   attention; the existing tools help the owner act on it.
 - Proactive delivery is the strongest retention mechanism in the suite — value arrives
   whether or not the owner logs in.
@@ -90,10 +89,10 @@ and emerging-buyer-language sections powered by Audience Pulse sub-modules.
 
 ## Stack and dependencies
 
-- SOTS Connect shell, auth, **Intelligence entitlement gate**, shared profile
+- Impact Intelligence shell, auth, **higher-tier entitlement gate**, Business Intelligence Profile
 - Depends on **Audience Pulse** (research engine) and benefits from **What Should I Promote?**
 - Shared research/validation layer with source + freshness tracking; fact vs inference separation
-- Email delivery service (Resend, matching SOTS Connect) with per-message status records
+- Email delivery service (Resend) with per-message status records
 - Scheduler / job runner; `intelligence_briefs`, `email_delivery_history`, `delivery_preferences`, `scheduled_report_jobs` tables
 - Anthropic API for drafting; duplicate-suppression against `previously_reported_findings`
 
@@ -112,7 +111,7 @@ and emerging-buyer-language sections powered by Audience Pulse sub-modules.
 
 <Prototype label="Email — monthly brief" caption="Sample, abridged, for a commercial insurance broker.">
   <div class="mock">
-    <h4>Your Business Growth Brief — February</h4>
+    <h4>Your Impact Intelligence Brief — February</h4>
     <p class="tagline">Impact System Marketing · for Rivera Commercial Lines · covers 6 Jan – 3 Feb</p>
 
     <h5>1 · What changed</h5>

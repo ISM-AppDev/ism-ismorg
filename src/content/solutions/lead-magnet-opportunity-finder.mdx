@@ -2,17 +2,24 @@
 title: Lead Magnet Opportunity Finder
 number: 3
 one_liner: Turn the stored audience, its problems, and the existing offers into specific lead-magnet ideas that lead naturally toward a paid offer.
-status: prototyping
+status: building
 category: Lead Generation
-tags: [business-growth-advisor, sots-connect, lead-generation, content, ai]
+tags: [impact-intelligence, lead-generation, content, ai]
 effort: M
 target_user: Owners who need more of the right prospects entering their funnel
 visibility: internal
 created: 2026-08-25
 updated: 2026-08-27
+images:
+  - src: shots/lead-magnet-opportunity-finder/1.svg
+    alt: Lead Magnet Opportunity Finder ranked list screen
+    caption: Ranked opportunity list — first-pass build
+  - src: shots/lead-magnet-opportunity-finder/2.svg
+    alt: Lead Magnet Opportunity Finder concept detail screen
+    caption: One concept expanded: format, title, next offer
+
 ---
 
-import Prototype from '../../components/Prototype.astro';
 import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
@@ -47,12 +54,12 @@ the paid offer is solid and now needs feeders.
 
 ## How it works
 
-1. A tool inside **Business Growth Advisor** in SOTS Connect, using shared auth and profile.
+1. A tool in the **Impact Intelligence** platform, using shared auth and the Business Intelligence Profile.
 2. Reads audience + problems + offers + existing marketing assets + current priorities from
    the shared profile.
 3. Generates a ranked set of lead-magnet opportunities, each fully specified and tied to an
    offer. The owner marks ones as "building" or dismisses them.
-4. Chosen opportunities are stored as `lead_magnet_recommendations`; the Intelligence Brief
+4. Chosen opportunities are stored as `lead_magnet_recommendations`; the Impact Intelligence Brief
    can later nudge ("you flagged the pricing calculator three weeks ago — still worth it?").
 
 <TeamOnly>
@@ -77,12 +84,12 @@ current priorities. Never re-suggest an asset the owner already has.
 
 ### Phase 3 — Cross-tool
 Take offer weak points from the Offer Strength Analyzer as inputs. Feed chosen concepts to
-the Intelligence Brief for follow-up. Optional: hand a concept to a drafting step that
+the Impact Intelligence Brief for follow-up. Optional: hand a concept to a drafting step that
 produces the first version of the asset.
 
 ## Stack and dependencies
 
-- SOTS Connect shell, auth, entitlement gate, shared profile (audience, problems, offers, marketing assets, priorities)
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile (audience, problems, offers, marketing assets, priorities)
 - Anthropic API; structured output so each opportunity renders as a card with fixed fields
 - `lead_magnet_recommendations` table: concept fields, linked offer, status (suggested / building / dismissed), timestamps
 - No external research for the base tool
@@ -97,29 +104,5 @@ produces the first version of the asset.
 - **Priority drift.** Recommendations should re-rank when the profile's "current priority"
   offer changes.
 
-<Prototype label="Opportunity list" caption="Sample output, ranked, for a bookkeeping firm.">
-  <div class="mock">
-    <h4>Lead Magnet Opportunity Finder</h4>
-    <p class="tagline">Audience: owner-operator trades &amp; contractors &nbsp;·&nbsp; Target offer: “Monthly Bookkeeping + Cash-Flow Review”</p>
-
-    <h5>1 — “Will this job actually make money?” calculator</h5>
-    <ul>
-      <li><strong>Problem:</strong> contractors bid on gut feel and find out too late a job lost money.</li>
-      <li><strong>Format:</strong> 6-field web calculator (materials, labor hrs, rate, overhead %, deposit, timeline).</li>
-      <li><strong>Outcome:</strong> a go / renegotiate / walk signal per bid.</li>
-      <li><strong>Next step → offer:</strong> “Want this run on every job automatically? That’s the monthly review.”</li>
-    </ul>
-
-    <h5>2 — The 15-minute end-of-month close checklist</h5>
-    <ul>
-      <li><strong>Problem:</strong> books are three months behind, so no decision is based on real numbers.</li>
-      <li><strong>Format:</strong> one-page checklist + a 4-min Loom.</li>
-      <li><strong>Next step → offer:</strong> “Don’t want to do this at all? We close your month for you.”</li>
-    </ul>
-
-    <p class="tagline">2 more ideas hidden · you already have “Tax Deadline Calendar”, not re-suggested</p>
-    <div class="btnrow"><span>Mark #1 building</span><span>Dismiss</span></div>
-  </div>
-</Prototype>
 
 </TeamOnly>

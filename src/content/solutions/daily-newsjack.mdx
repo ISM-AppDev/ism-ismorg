@@ -48,9 +48,9 @@ alongside Scheduled Posts, which gives the drafts somewhere to land.
 
 ## How it works
 
-1. A SOTS Connect tool using shared auth and the shared business profile. Setup captures
-   industry, watched categories, audience keywords, tone, sources, and how many drafts per
-   day the owner wants.
+1. A tool in the **Impact Intelligence** platform, using shared auth and the Business
+   Intelligence Profile. Setup captures industry, watched categories, audience keywords,
+   tone, sources, and how many drafts per day the owner wants.
 2. A scheduled morning job ingests stories from news feeds and APIs for the watched
    categories, deduplicates and clusters near-identical coverage, and attaches source
    metadata and timestamps.
@@ -99,7 +99,7 @@ flags sensitive ones for manual review.
 
 ## Stack and dependencies
 
-- SOTS Connect shell, auth, entitlement gate, shared profile (audience, keywords, positioning, tone)
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile (audience, keywords, positioning, tone)
 - News ingestion: RSS + a news API (licensing and coverage matter — see risks); dedup / clustering
 - Relevance scoring against stored audience + keywords; stored feedback loop
 - Anthropic API for "why it matters," angles, and drafts, with strict prompt-injection isolation of article text; fact-vs-take separation

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import MetaStrip from '../components/MetaStrip.astro';
 import StatusBadge from '../components/StatusBadge.astro';
 import VoteButton from '../components/VoteButton.astro';
+import Shots from '../components/Shots.astro';
 import { getSolutions, solutionHref } from '../lib/solutions';
 
 export async function getStaticPaths() {
@@ -22,6 +23,7 @@ const { data } = entry;
 const { Content } = await entry.render();
 const num = String(data.number).padStart(2, '0');
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const hasShots = Array.isArray(data.images) && data.images.length > 0;
 ---
 <Base title={data.title} description={data.one_liner} crumbs={[data.category, data.title]}>
   <article class="section--tight container">
@@ -39,10 +41,19 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       </div>
     </header>
 
-    <MetaStrip entry={entry} />
+    <div class:list={['idea__layout', { 'idea__layout--split': hasShots }]}>
+      <div class="idea__main">
+        <MetaStrip entry={entry} />
+        <div class="prose idea__body">
+          <Content />
+        </div>
+      </div>
 
-    <div class="prose idea__body">
-      <Content />
+      {hasShots && (
+        <aside class="idea__aside">
+          <Shots images={data.images} label={data.shots_label} />
+        </aside>
+      )}
     </div>
 
     <nav class="idea__nav">
@@ -73,6 +84,26 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     .idea__tagline { margin: var(--ism-space-2) 0 0; max-width: 60ch; }
     .idea__vote { margin-top: var(--ism-space-3); }
     .idea__body { margin-top: var(--ism-space-6); }
+
+    /* single column by default; split when there are screenshots */
+    .idea__layout--split .idea__body { max-width: none; }
+
+    @media (min-width: 900px) {
+      .idea__layout--split {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        gap: var(--ism-space-8);
+        align-items: start;
+      }
+      .idea__layout--split .idea__aside {
+        position: sticky;
+        top: var(--ism-space-4);
+      }
+    }
+    @media (max-width: 899px) {
+      .idea__aside { margin-top: var(--ism-space-6); }
+    }
+
     .idea__nav {
       display: flex; justify-content: space-between; gap: var(--ism-space-3);
       margin-top: var(--ism-space-12);

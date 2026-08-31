@@ -44,6 +44,22 @@ const solutions = defineCollection({
     updated: z.coerce.date().optional(),
     /** hide without deleting */
     draft: z.boolean().default(false),
+    /**
+     * Screenshots of the real (first-pass) app. When present, the detail page
+     * switches to a two-column layout: prose left, a sticky image rail right.
+     * `src` is relative to /public (e.g. "shots/<slug>/result.png").
+     */
+    images: z
+      .array(
+        z.object({
+          src: z.string(),
+          alt: z.string(),
+          caption: z.string().optional(),
+        }),
+      )
+      .default([]),
+    /** heading for the image rail; defaults to "First-pass app" */
+    shots_label: z.string().optional(),
   }),
 });
 

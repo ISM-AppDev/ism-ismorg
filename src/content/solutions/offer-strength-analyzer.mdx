@@ -2,17 +2,24 @@
 title: Offer Strength Analyzer
 number: 2
 one_liner: Analyze an existing or proposed offer against the audience and the rest of the portfolio, and get the few changes that would make it stronger.
-status: prototyping
+status: building
 category: Offers & Pricing
-tags: [business-growth-advisor, sots-connect, diagnostic, offers, pricing, ai]
+tags: [impact-intelligence, diagnostic, offers, pricing, ai]
 effort: M
 target_user: Owners packaging or repricing a service, course, or productized offer
 visibility: internal
 created: 2026-08-25
 updated: 2026-08-27
+images:
+  - src: shots/offer-strength-analyzer/1.svg
+    alt: Offer Strength Analyzer analysis result screen
+    caption: Analysis result — first-pass build
+  - src: shots/offer-strength-analyzer/2.svg
+    alt: Offer Strength Analyzer recommendations screen
+    caption: Prioritized issues and recommendations
+
 ---
 
-import Prototype from '../../components/Prototype.astro';
 import TeamOnly from '../../components/TeamOnly.astro';
 
 ## The problem
@@ -46,13 +53,13 @@ a service that "should" sell isn't. Also useful before a launch, as a last gut-c
 
 ## How it works
 
-1. A tool inside **Business Growth Advisor** in SOTS Connect. Uses shared auth and the
-   shared business profile, including the multi-offer records already in the profile schema.
+1. A tool in the **Impact Intelligence** platform. Uses shared auth and the Business
+   Intelligence Profile, including its multi-offer records.
 2. The user picks an existing offer from the profile or drafts a new one inline.
 3. The model analyzes it against audience, audience problems, objections, and sibling
    offers, then returns prioritized issues + fixes and an overall read (strong / mixed / weak).
 4. Results are stored as an `offer_analysis` so the Lead Magnet Opportunity Finder and the
-   Intelligence Brief can build on them ("your core offer's weak point is proof").
+   Impact Intelligence Brief can build on them ("your core offer's weak point is proof").
 
 <TeamOnly>
 
@@ -62,8 +69,8 @@ a service that "should" sell isn't. Also useful before a launch, as a last gut-c
 - It naturally pairs with Message Market-Fit Checker — fix the offer, then fix the message
   that sells it.
 - Portfolio-aware analysis (is this offer cannibalizing that one?) is something a generic
-  chatbot can't do without the stored context SOTS Connect already has.
-- Sets up a clean upsell path into the Intelligence tier's "what should I promote?" logic.
+  chatbot can't do without the stored context Impact Intelligence already has.
+- Sets up a clean path into the What Should I Promote logic.
 
 ## Build phases
 
@@ -76,12 +83,12 @@ Pull offers, audience, and objections from the shared profile. Compare the offer
 siblings for overlap and laddering. Progressive profiling for gaps.
 
 ### Phase 3 — Cross-tool and longitudinal
-Feed weak points to the Lead Magnet Opportunity Finder and the Intelligence Brief. Track an
+Feed weak points to the Lead Magnet Opportunity Finder and the Impact Intelligence Brief. Track an
 offer's analysis history so the owner can see whether edits actually helped.
 
 ## Stack and dependencies
 
-- SOTS Connect shell, auth, entitlement gate, shared profile (audience + multi-offer records)
+- Impact Intelligence shell, auth, entitlement gate, Business Intelligence Profile (audience + multi-offer records)
 - Anthropic API with a fixed evaluation rubric; structured output
 - `offer_analyses` table: offer snapshot, verdicts, prioritized issues, recommendations, links to related runs
 - No external research needed for the base tool
@@ -96,25 +103,5 @@ offer's analysis history so the owner can see whether edits actually helped.
   keep it out of prescriptive financial advice.
 - **Overlap with human judgment.** Position as a structured second opinion, not a verdict.
 
-<Prototype label="Analysis result" caption="Sample output for a proposed productized offer.">
-  <div class="mock">
-    <h4>Offer Strength Analyzer</h4>
-    <p class="tagline">Offer: “Website Rescue Sprint — $4,500, 2 weeks” &nbsp;·&nbsp; Audience: established local service businesses</p>
-    <div class="row"><span><strong>Overall</strong></span><span class="score">Mixed</span></div>
-    <h5>Prioritized issues</h5>
-    <ul>
-      <li><strong>Vague deliverable.</strong> “Rescue” could mean copy, design, speed, or SEO. Buyers can’t tell if it solves <em>their</em> problem, so they don’t buy.</li>
-      <li><strong>No proof.</strong> $4,500 in two weeks needs a before/after or a named result. Nothing here lowers the risk.</li>
-      <li><strong>Price sits between your other two offers</strong> ($1.5k audit, $12k rebuild) without a reason to pick it. It may just pull people down from the rebuild.</li>
-    </ul>
-    <h5>Recommendations</h5>
-    <ul>
-      <li>Pick one outcome to own: “A homepage that loads in under 2s and states what you do in 5 words.”</li>
-      <li>Add one case result and a simple guarantee (“or the sprint is free”).</li>
-      <li>Frame it as the on-ramp to the rebuild, not an alternative to it.</li>
-    </ul>
-    <div class="btnrow"><span>Compare to “Full Rebuild”</span><span>Save analysis</span></div>
-  </div>
-</Prototype>
 
 </TeamOnly>
