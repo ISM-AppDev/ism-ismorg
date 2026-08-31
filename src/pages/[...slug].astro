@@ -27,7 +27,7 @@ const hasShots = Array.isArray(data.images) && data.images.length > 0;
 ---
 <Base title={data.title} description={data.one_liner} crumbs={[data.category, data.title]}>
   <article class="section--tight container">
-    <a class="back t-label t-muted" href={base + '/'}>&larr; All ideas</a>
+    <a class="back t-label" href={base + '/'}>&larr; All ideas</a>
 
     <header class="idea__head">
       <div class="idea__head-top">
@@ -73,7 +73,12 @@ const hasShots = Array.isArray(data.images) && data.images.length > 0;
   </article>
 
   <style>
-    .back { display: inline-block; margin-bottom: var(--ism-space-4); }
+    .back {
+      display: inline-block;
+      margin-bottom: var(--ism-space-4);
+      color: var(--ism-text);
+      font-weight: 800;
+    }
     .back:hover { color: var(--ism-action); }
     .idea__title { color: var(--ism-action); }
     .idea__head { margin-bottom: var(--ism-space-4); }
@@ -95,10 +100,9 @@ const hasShots = Array.isArray(data.images) && data.images.length > 0;
         gap: var(--ism-space-8);
         align-items: start;
       }
-      .idea__layout--split .idea__aside {
-        position: sticky;
-        top: var(--ism-space-4);
-      }
+      /* The rail flows with the page — both columns scroll together.
+         No sticky: with only 2–3 screenshots and long copy, sticky made
+         the rail freeze while the text kept moving, then jump. */
     }
     @media (max-width: 899px) {
       .idea__aside { margin-top: var(--ism-space-6); }
