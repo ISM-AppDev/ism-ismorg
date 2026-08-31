@@ -1,0 +1,99 @@
+---
+import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const isTeam = process.env.TEAM_BUILD === '1';
+---
+<Base title="Submitted ideas" description="Review ideas submitted through the public form." crumbs={['Submitted ideas']}>
+  <section class="section--tight container review">
+    <a class="back t-label" href={base + '/'}>&larr; All ideas</a>
+    <h1 class="t-display-l review__title">Submitted ideas</h1>
+
+    {!isTeam && (
+      <p class="t-body-l t-muted">This page is only available in the team view at <code>/solutions/team/review</code>.</p>
+    )}
+
+    {isTeam && (
+      <>
+        <p class="t-body t-muted review__lead" data-lead>Loading…</p>
+        <div class="review__list" data-list></div>
+      </>
+    )}
+  </section>
+
+  <style>
+    .review { max-width: 780px; }
+    .back { display: inline-block; margin-bottom: var(--ism-space-4); color: var(--ism-text); font-weight: 800; }
+    .back:hover { color: var(--ism-action); }
+    .review__title { color: var(--ism-action); }
+    .review__lead { margin: var(--ism-space-2) 0 var(--ism-space-6); }
+    .review__list { display: flex; flex-direction: column; gap: var(--ism-space-4); }
+
+    .sub {
+      border: var(--ism-rule) solid var(--ism-text);
+      background: var(--ism-bg);
+      padding: var(--ism-space-3);
+    }
+    .sub__top {
+      display: flex; justify-content: space-between; gap: var(--ism-space-2);
+      align-items: baseline; flex-wrap: wrap;
+      border-bottom: var(--ism-rule) solid var(--ism-border);
+      padding-bottom: var(--ism-space-2); margin-bottom: var(--ism-space-2);
+    }
+    .sub__name { font-style: italic; font-weight: 800; font-size: 1.125rem; margin: 0; color: var(--ism-action); }
+    .sub__meta { font-size: 0.8125rem; color: var(--ism-text-muted); }
+    .sub__meta a { color: var(--ism-action); }
+    .sub dl { margin: 0; }
+    .sub dt {
+      font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+      font-weight: 700; color: var(--ism-text-muted); margin-top: var(--ism-space-2);
+    }
+    .sub dd { margin: 2px 0 0; white-space: pre-wrap; }
+    .review__empty { color: var(--ism-text-muted); }
+  </style>
+
+  {isTeam && (
+    <script>
+      const API = `${import.meta.env.BASE_URL}/api`.replace(/\/{2,}/g, '/');
+      const lead = document.querySelector<HTMLElement>('[data-lead]')!;
+      const list = document.querySelector<HTMLElement>('[data-list]')!;
+      const esc = (s: string) =>
+        String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+      const when = (iso: string) => {
+        try { return new Date(iso).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
+        catch { return iso; }
+      };
+
+      fetch(`${API}/submissions`, { headers: { accept: 'application/json' } })
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((rows: any[]) => {
+          if (!rows.length) {
+            lead.textContent = 'No submissions yet.';
+            return;
+          }
+          lead.textContent = `${rows.length} submission${rows.length === 1 ? '' : 's'}, newest first.`;
+          list.innerHTML = rows.map((s) => `
+            <article class="sub">
+              <div class="sub__top">
+                <h2 class="sub__name">${esc(s.idea_name)}</h2>
+                <span class="sub__meta">
+                  ${esc(s.first_name)} ${esc(s.last_name)} ·
+                  <a href="mailto:${esc(s.email)}">${esc(s.email)}</a> ·
+                  ${esc(when(s.ts))}
+                </span>
+              </div>
+              <dl>
+                <dt>Problem it solves</dt><dd>${esc(s.problem)}</dd>
+                <dt>What it does</dt><dd>${esc(s.what_it_does)}</dd>
+                <dt>Who it's for</dt><dd>${esc(s.who_for)}</dd>
+                ${s.details ? `<dt>Anything else</dt><dd>${esc(s.details)}</dd>` : ''}
+              </dl>
+            </article>`).join('');
+        })
+        .catch((err) => {
+          lead.textContent = err.message === '403'
+            ? 'Not authorized — open this page under /solutions/team/ and sign in.'
+            : 'Could not load submissions.';
+        });
+    </script>
+  )}
+</Base>

@@ -6,6 +6,7 @@ import { CATEGORIES } from '../content/config';
 
 const items = await getSolutions();
 const totals = statusTotals(items);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // only show category pills that actually have ideas, in canonical order
 const present = new Set(items.map((i) => i.data.category));
@@ -14,14 +15,23 @@ const categories = CATEGORIES.filter((c) => present.has(c));
 <Base title="Solution Ideas" crumbs={['Catalog']}>
   <div class="band">
     <section class="section--tight container">
-      <p class="t-label t-crimson hero__kicker">Vote on what we build next</p>
-      <h1 class="t-display-2xl hero__title">Solution&nbsp;Ideas</h1>
-      <p class="t-body-l hero__blurb">
-        A working catalog of applications Impact System Marketing could build — most of them
-        aimed at small-business owners. Each idea has a one-page brief: the problem, how it
-        works, what it would take to build in phases, and a prototype of what the user
-        would actually see. Vote on the ones worth pursuing.
-      </p>
+      <div class="hero__grid">
+        <div class="hero__main">
+          <p class="t-label t-crimson hero__kicker">Vote on what we build next</p>
+          <h1 class="t-display-2xl hero__title">Solution&nbsp;Ideas</h1>
+          <p class="t-body-l hero__blurb">
+            A working catalog of applications Impact System Marketing could build — most of
+            them aimed at small-business owners. Each idea has a one-page brief: the problem,
+            how it works, and what it would take to build. Vote on the ones worth pursuing.
+          </p>
+        </div>
+
+        <aside class="hero__cta">
+          <p class="t-label t-crimson">Got an idea?</p>
+          <p class="hero__cta-copy t-body">Something we should build? Tell us — the strong ones get added here to vote on.</p>
+          <a class="btn" href={base + '/submit/'}>Submit your idea&nbsp;&rarr;</a>
+        </aside>
+      </div>
 
       <dl class="stats">
         <div><dt class="t-display-l">{totals.total}</dt><dd class="t-label t-muted">ideas</dd></div>
@@ -62,9 +72,28 @@ const categories = CATEGORIES.filter((c) => present.has(c));
   </section>
 
   <style>
+    .hero__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+      gap: var(--ism-space-8);
+      align-items: start;
+      margin-bottom: var(--ism-space-6);
+    }
+    @media (max-width: 820px) {
+      .hero__grid { grid-template-columns: 1fr; gap: var(--ism-space-4); }
+    }
     .hero__kicker { margin: 0 0 var(--ism-space-2); }
     .hero__title { margin: 0 0 var(--ism-space-3); }
-    .hero__blurb { max-width: 60ch; margin: 0 0 var(--ism-space-6); }
+    .hero__blurb { max-width: 56ch; margin: 0; }
+
+    .hero__cta {
+      border: var(--ism-rule) solid var(--ism-text);
+      background: var(--ism-bg);
+      padding: var(--ism-space-3);
+    }
+    .hero__cta > * { margin: 0; }
+    .hero__cta-copy { margin: 8px 0 var(--ism-space-3); }
+    .hero__cta .btn { width: 100%; }
 
     .stats { display: flex; flex-wrap: wrap; gap: var(--ism-space-6); margin: 0; }
     .stats div { display: flex; flex-direction: column; gap: 4px; }

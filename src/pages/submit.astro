@@ -1,0 +1,178 @@
+---
+import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Submit an idea" description="Suggest an application Impact System Marketing should build." crumbs={['Submit an idea']}>
+  <section class="section--tight container submit">
+    <a class="back t-label" href={base + '/'}>&larr; All ideas</a>
+
+    <h1 class="t-display-l submit__title">Submit an idea</h1>
+    <p class="t-body-l t-muted submit__lead">
+      Have an application Impact System Marketing should build? Tell us about it. We read
+      every submission and add the strong ones to the catalog for everyone to vote on.
+    </p>
+
+    <form class="form" data-form novalidate>
+      <div class="form__row form__row--2">
+        <label class="field">
+          <span class="field__label">First name</span>
+          <input name="first_name" type="text" autocomplete="given-name" required maxlength="80" />
+        </label>
+        <label class="field">
+          <span class="field__label">Last name</span>
+          <input name="last_name" type="text" autocomplete="family-name" required maxlength="80" />
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input name="email" type="email" autocomplete="email" required maxlength="160" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Idea name</span>
+        <input name="idea_name" type="text" required maxlength="120" placeholder="A short working title" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">What problem does it solve?</span>
+        <textarea name="problem" rows="3" required maxlength="2000"></textarea>
+      </label>
+
+      <label class="field">
+        <span class="field__label">What does the idea do?</span>
+        <textarea name="what_it_does" rows="3" required maxlength="2000"></textarea>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Who is it for?</span>
+        <textarea name="who_for" rows="2" required maxlength="1000"></textarea>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Anything else? <span class="field__opt">(optional)</span></span>
+        <textarea name="details" rows="4" maxlength="4000" placeholder="How it might work, examples, why now…"></textarea>
+      </label>
+
+      <!-- honeypot: real people leave this blank -->
+      <div class="hp" aria-hidden="true">
+        <label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      <div class="form__foot">
+        <button type="submit" class="btn" data-submit>Submit idea</button>
+        <p class="form__msg t-caption" data-msg hidden></p>
+      </div>
+    </form>
+
+    <div class="thanks" data-thanks hidden>
+      <h2 class="t-heading">Thanks — got it.</h2>
+      <p class="t-body">
+        Your idea is in the queue. If it makes the catalog you'll see it show up on the
+        <a href={base + '/'}>ideas page</a>.
+      </p>
+      <button type="button" class="btn btn--ghost" data-another>Submit another</button>
+    </div>
+  </section>
+
+  <style>
+    .submit { max-width: 640px; }
+    .back { display: inline-block; margin-bottom: var(--ism-space-4); color: var(--ism-text); font-weight: 800; }
+    .back:hover { color: var(--ism-action); }
+    .submit__title { color: var(--ism-action); }
+    .submit__lead { margin: var(--ism-space-2) 0 var(--ism-space-6); }
+
+    .form { display: flex; flex-direction: column; gap: var(--ism-space-3); }
+    .form__row--2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--ism-space-3); }
+    @media (max-width: 560px) { .form__row--2 { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field__label { font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--ism-text-muted); }
+    .field__opt { letter-spacing: 0; text-transform: none; font-weight: 400; }
+    .field input, .field textarea {
+      font-family: var(--ism-font-display);
+      font-size: 1rem;
+      padding: 10px 12px;
+      border: var(--ism-rule) solid var(--ism-border);
+      background: var(--ism-bg);
+      color: var(--ism-text);
+      border-radius: var(--ism-radius);
+    }
+    .field textarea { resize: vertical; }
+    .field input:focus-visible, .field textarea:focus-visible {
+      outline: var(--ism-rule) solid var(--ism-action);
+      outline-offset: 2px;
+      border-color: var(--ism-action);
+    }
+    .field input:user-invalid, .field textarea:user-invalid { border-color: var(--ism-error); }
+
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    .form__foot { display: flex; align-items: center; gap: var(--ism-space-3); flex-wrap: wrap; margin-top: var(--ism-space-2); }
+    .form__msg { margin: 0; }
+    .form__msg[data-state='error'] { color: var(--ism-error); }
+    .btn[disabled] { opacity: 0.5; cursor: default; }
+
+    .thanks { border: var(--ism-rule) solid var(--ism-text); padding: var(--ism-space-4); }
+    .thanks h2 { color: var(--ism-action); margin-bottom: var(--ism-space-2); }
+    .thanks p { margin-bottom: var(--ism-space-3); }
+    .thanks a { color: var(--ism-action); border-bottom: 2px solid var(--ism-crimson-300); }
+  </style>
+
+  <script>
+    const API = `${import.meta.env.BASE_URL}/api`.replace(/\/{2,}/g, '/');
+    const form = document.querySelector<HTMLFormElement>('[data-form]');
+    const thanks = document.querySelector<HTMLElement>('[data-thanks]');
+    if (form && thanks) {
+      const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      const showMsg = (text: string, state = 'error') => {
+        msg.textContent = text;
+        msg.dataset.state = state;
+        msg.hidden = false;
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        msg.hidden = true;
+        if (!form.reportValidity()) return;
+
+        const fd = new FormData(form);
+        const payload = Object.fromEntries(fd.entries());
+        btn.disabled = true;
+        btn.textContent = 'Submitting…';
+        try {
+          const res = await fetch(`${API}/submit`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.ok) {
+            form.hidden = true;
+            thanks.hidden = false;
+            thanks.scrollIntoView({ block: 'center' });
+          } else if (res.status === 429) {
+            showMsg('Too many submissions from here just now — try again in a few minutes.');
+          } else if (data.error === 'missing_fields' || data.error === 'bad_email') {
+            showMsg('Please check the highlighted fields and try again.');
+          } else {
+            showMsg('Something went wrong sending that. Try again in a moment.');
+          }
+        } catch {
+          showMsg('Could not reach the server. Check your connection and try again.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Submit idea';
+        }
+      });
+
+      document.querySelector('[data-another]')?.addEventListener('click', () => {
+        form.reset();
+        form.hidden = false;
+        thanks.hidden = true;
+        form.scrollIntoView({ block: 'start' });
+      });
+    }
+  </script>
+</Base>

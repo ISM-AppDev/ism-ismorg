@@ -32,6 +32,7 @@ server {
         proxy_set_header   X-Real-IP $remote_addr;
         proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Ism-Team "yes";   # unlocks GET /api/submissions
     }
 
     location = /solutions/team { return 301 /solutions/team/; }
@@ -52,6 +53,7 @@ server {
         proxy_set_header   X-Real-IP $remote_addr;
         proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Ism-Team "";      # never trust a client-supplied value here
     }
 
     location = /solutions { return 301 /solutions/; }
