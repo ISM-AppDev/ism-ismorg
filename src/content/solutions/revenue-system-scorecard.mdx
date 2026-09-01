@@ -1,0 +1,147 @@
+---
+title: The Revenue System Scorecard
+number: 14
+one_liner: A short scored assessment across the five revenue-system pillars — offer/pricing, traffic, follow-up, automation, reporting — that names the single one most limiting growth right now.
+status: spark
+category: Lead Generation
+tags: [assessment, lead-magnet, diagnostic, scorecard, revenue-system]
+effort: M
+target_user: Established owners with real revenue and customer data who sense growth is inconsistent but can't pinpoint why
+visibility: public
+created: 2026-08-31
+updated: 2026-08-31
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Owners can't tell which part of their revenue system is the actual bottleneck — is it the
+offer, the traffic, the follow-up, the automation, or the reporting? So effort gets spread
+thin across all five, or spent on the wrong fix. The question they actually ask out loud is
+"I'm not sure what we should fix first," and nothing they have gives them a clear answer.
+
+## What it does
+
+A short, self-scored assessment — 20–25 questions, four or five per pillar — across the
+five pillars of a revenue system:
+
+- **Offer / pricing** — clarity, conversion, pricing confidence
+- **Traffic** — lead volume consistency and source reliability
+- **Follow-up** — speed, consistency, and follow-through with leads
+- **Automation** — manual bottlenecks and dropped handoffs
+- **Reporting** — visibility into what's actually working
+
+Weighted scoring reveals the **single weakest pillar**, and the owner walks away with a
+one-page scorecard: their primary leak, why it's limiting growth, and — in general terms —
+what fixing it typically involves. The framing throughout is systems-vs-tactics: *what to
+fix first* matters more than *what tactic to try next*.
+
+## Who it is for
+
+Established business owners with existing revenue and customer data. Only someone running a
+real operating business can answer the questions meaningfully — which is the point: the
+assessment qualifies as it diagnoses, and the result segments each owner by which pillar is
+weak.
+
+## How it works
+
+1. **Intro framing** sets the tone: why "what to fix first" beats "what tactic next."
+2. **Five scored sections**, four or five plain-language questions each, one per pillar. No
+   marketing jargon — questions a business owner can answer from what they already know.
+3. **Weighted scoring** combines the section scores and surfaces the one pillar most
+   limiting growth right now (kept simple, no fabricated benchmarks).
+4. **Results page / one-page PDF**: the primary leak, why it matters, and what fixing it
+   typically requires — described generally, not prescriptively.
+5. **Close**: an invitation to review the scorecard live and decide on one project to
+   tackle first.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- It echoes the owner's own words — "I'm not sure what we should fix first" — and runs on
+  the business's core diagnostic methodology (five pillars, one weakest link).
+- It qualifies while it diagnoses: only owners with an operating business and real data can
+  complete it, and the output naturally segments prospects by weak pillar.
+- It bridges cleanly to **Your Next Marketing Win Sprint**. The scorecard's whole job is to
+  reveal ONE weak pillar — which is exactly the "one defined project" the Sprint is built
+  around, so the next step feels obvious rather than sold.
+- Landing-page angle: lead with the owner's uncertainty as the headline tension; position
+  it as a diagnostic that reveals one clear answer, not a quiz that lists everything wrong.
+  Consultative, systems-minded, no ROI promises.
+
+## Build phases
+
+### Phase 1 — Validate the scoring
+Write the five-pillar question set (4–5 each) and the weighting logic in a spreadsheet.
+Run it against a handful of real or composite business profiles to make sure results feel
+specific, not generic. Draft the one-page PDF template by hand.
+
+### Phase 2 — Ship the assessment
+Turn the validated logic into an interactive form (a lightweight quiz tool, or Typeform /
+Google Form + a Zapier-to-PDF step, or a small custom form). Auto-generate the one-page
+scorecard: primary leak, why it matters, what fixing it typically involves. Capture the
+opt-in.
+
+### Phase 3 — Nurture and bridge
+A four-email follow-up after opt-in:
+1. Deliver results + reinforce what the weakest-pillar score means in practice
+2. Why fixing the weakest pillar first beats spreading effort across all five
+3. A short composite/anonymized walkthrough of identifying one pillar leading to a focused fix
+4. A direct invite to book the results call, framed as "deciding which project to run in the Sprint"
+
+Plus a booking link for the results call and segment tags by weakest pillar feeding the
+Sprint's "one project" framing.
+
+## Stack and dependencies
+
+- Scoring logic validated in a spreadsheet before any build
+- A form / quiz tool (or a small custom form) + PDF generation (Zapier-to-PDF or similar)
+- Email platform for the four-email sequence; a booking link for the results call
+- Segment tags on opt-in by weakest pillar
+- **Depends on tightening the Sprint offer messaging first** (known 54/100 weakness) so the
+  post-scorecard call has a compelling next step to point to
+- Bridges to: **Your Next Marketing Win Sprint**
+
+## Open questions and risks
+
+- **Unvalidated-feeling scoring** would undercut the "judgment, not tactics" positioning —
+  the weighting has to be tested against real profiles before promotion.
+- **No implied ROI guarantees.** Results describe what fixing a pillar typically involves,
+  in general terms, never a promised outcome.
+- **Sprint offer weakness (54/100)** may blunt conversion right after a strong diagnostic —
+  worth tightening Sprint messaging before promoting the scorecard heavily.
+- **Qualification cuts both ways** — requiring real business data is great for lead quality
+  but limits top-of-funnel volume; that's an accepted trade, not a bug.
+
+<Prototype label="The scorecard" caption="Sample one-page result for a fictional business — Follow-up is the weakest pillar.">
+  <div class="mock">
+    <h4>Your Revenue System Scorecard</h4>
+    <p class="tagline">Fictional example — “Ridgeline Consulting”, 22 questions answered</p>
+
+    <h5>Pillar scores (out of 100)</h5>
+    <div class="row"><span>Offer / pricing</span><span>72</span></div>
+    <div class="row"><span>Traffic</span><span>65</span></div>
+    <div class="row"><span><strong>Follow-up</strong></span><span class="score">38</span></div>
+    <div class="row"><span>Automation</span><span>54</span></div>
+    <div class="row"><span>Reporting</span><span>61</span></div>
+
+    <h5>Your primary leak: Follow-up</h5>
+    <p>Leads are coming in at a workable rate and the offer converts when it gets a real
+    conversation — but responses are slow and inconsistent, and there's no set sequence, so
+    interested people go cold before anyone reaches them a second time. Fixing traffic or
+    the offer right now would just pour more leads into the same gap.</p>
+
+    <h5>What fixing it typically involves</h5>
+    <ul>
+      <li>A defined response time and a written multi-touch sequence for every new lead</li>
+      <li>One owner of follow-through, not "whoever gets to it"</li>
+      <li>A simple way to see which leads are mid-sequence and which have gone quiet</li>
+    </ul>
+    <div class="btnrow"><span>Book a call to review your results</span><span>Download PDF</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>
