@@ -1,0 +1,124 @@
+---
+title: Media Capture Tool
+number: 16
+one_liner: Turn any video into a GIF or a still — scrub or step to the exact frame and capture it, or set a range and make a GIF with FPS, speed, and quality control, all kept in a built-in gallery.
+status: spark
+category: Operations & Admin
+tags: [utility, video, gif, images, browser-tool, client-side]
+effort: M
+target_user: Anyone turning video moments into shareable GIFs or stills — social posts, product demos, docs, reactions
+visibility: public
+created: 2026-08-31
+updated: 2026-08-31
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+You've got a video and you want one good still — or a short looping GIF of a moment: a
+demo, a reaction, a before/after. Today that means a separate app or an upload to a site
+you don't control, and then you're left with loose files and no way to keep track of them.
+
+## What it does
+
+Load a video, then:
+
+- **Scrub or step** frame by frame to the exact moment
+- **Capture Image** grabs that frame as a still
+- Or set a **trim range** and **Create GIF**, with control over frames-per-second, a speed
+  multiplier, and quality
+
+Everything you capture drops into a **gallery** you can filter by type (images / GIFs),
+sort by date, and download or share. It all runs in the browser — the video is never
+uploaded.
+
+## Who it is for
+
+Marketers and content people making social GIFs and thumbnails, support and docs writers
+capturing UI moments, and anyone who wants a quick clip-to-GIF without installing an app or
+handing footage to a web service.
+
+## How it works
+
+1. Choose a video file. It loads into a player with a trim slider and frame-step buttons —
+   no upload.
+2. **For a still**: land on the frame, hit Capture Image. The current video frame is
+   painted to a canvas and saved to the gallery.
+3. **For a GIF**: set the start/end range, FPS, speed, and quality, then Create GIF. The
+   tool seeks across the range, captures frames, and encodes them to an animated GIF in the
+   browser (a Web Worker keeps the UI responsive).
+4. Captures appear in the gallery tagged by type and date — filter, sort, download, or
+   share.
+5. Nothing leaves the tab.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- Sibling to **Video to Image Gallery** (No. 15): that one is bulk sampling — drop a clip,
+  get N stills. This one is precise single capture plus GIF making plus a place to keep the
+  results. They could ship as one "video tools" product or two focused ones.
+- GIF creation is the differentiator and the reason people come back.
+- Still a small client-side build, and it carries the same "your file never leaves your
+  machine" trust story.
+
+## Build phases
+
+### Phase 1 — Capture image
+Player with a trim slider and frame-step buttons. Capture Image saves the current frame to
+a gallery; download a single item. Entirely client-side.
+
+### Phase 2 — Create GIF
+Range selection, FPS / speed / quality controls, in-browser GIF encoding in a Web Worker.
+Gallery filter by type and sort by date.
+
+### Phase 3 — Organize and share
+Rename or tag items, bulk download as a zip, copy-to-clipboard, "Clear All", and persist
+the gallery across reloads (IndexedDB). Optional share sheet.
+
+## Stack and dependencies
+
+- `<video>` + `<canvas>` for frame capture
+- A client-side GIF encoder (gif.js / gifenc-style) running in a Web Worker
+- IndexedDB for the persistent gallery; Clipboard and download APIs; a small zip writer for
+  bulk download
+- No server — deployable as a static page. Shares components with Video to Image Gallery if
+  they're built together.
+
+## Open questions and risks
+
+- **GIF encoding is CPU-heavy.** Long ranges or high FPS can hang a tab — cap range × FPS,
+  run it in a worker, show progress, and allow cancel.
+- **GIF is a dated format** (256 colours, large files). The quality/size trade-off needs
+  sane defaults; consider offering a short MP4 or WebP alternative later.
+- **Codec support varies** for the source video — same caveat as the sibling tool.
+- **Overlap with Video to Image Gallery** — decide whether these ship as one tool or two
+  before building both.
+- **Gallery persistence limits.** IndexedDB has size caps; large GIFs could fill it — needs
+  eviction or a size warning.
+
+<Prototype label="The tool" caption="Recreated from the reference — capture a frame, or set a range and build a GIF; results land in the gallery.">
+  <div class="mock">
+    <h4>Media Capture Tool</h4>
+    <p class="tagline">Capture images and GIFs from your videos — organize, save, and share. Runs in the browser; the video is not uploaded.</p>
+
+    <h5>Video controls</h5>
+    <div class="row"><span>Upload video</span><span>Choose file</span></div>
+    <div class="row"><span>Trim / scrub</span><span>◀ Frame&nbsp;&nbsp;·&nbsp;&nbsp;Frame ▶</span></div>
+    <div class="row"><span>Frames per second (GIF)</span><span>10</span></div>
+    <div class="row"><span>GIF speed multiplier</span><span>1x</span></div>
+    <div class="row"><span>GIF quality (1–30, lower = better)</span><span>10</span></div>
+    <div class="btnrow"><span>Capture image</span><span>Create GIF</span></div>
+    <p class="tagline">Status: Ready — upload a video to begin.</p>
+
+    <h5>Media gallery</h5>
+    <div class="row"><span>Filter</span><span>All types</span></div>
+    <div class="row"><span>Sort</span><span>Newest first</span></div>
+    <p class="tagline">No items in gallery yet. Captured images and GIFs show up here.</p>
+    <div class="btnrow"><span>Clear all</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>
