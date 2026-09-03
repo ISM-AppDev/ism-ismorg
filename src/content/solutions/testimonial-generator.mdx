@@ -1,0 +1,134 @@
+---
+title: Testimonial Generator
+number: 17
+one_liner: A minute of tap-to-answer questions from your customer, turned into four or five polished testimonial drafts they can pick from, edit, or regenerate — no writing required.
+status: spark
+category: Brand & Visibility
+tags: [testimonials, social-proof, reviews, content, ai, customer-facing]
+effort: M
+target_user: Owners who know they should collect testimonials but whose customers never get around to writing one
+visibility: public
+created: 2026-08-31
+updated: 2026-08-31
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Happy customers rarely write testimonials. A blank box and "tell us about your experience"
+is too much work, so you chase people for weeks and get a trickle of thin one-liners. The
+genuinely good social proof stays stuck in people's heads.
+
+## What it does
+
+Sends the customer a short, tap-to-answer set of questions — which product or service,
+overall experience, the biggest benefit, the service experience, how likely they are to
+recommend it, and what they'd tell someone considering it. No typing. From those choices it
+drafts **four or five distinct testimonials** in the customer's voice, varied in length and
+angle. They pick one, tweak it if they want, or regenerate for more options — then confirm
+their name, title, and permission to use it.
+
+## Who it is for
+
+Any owner who runs on social proof — service businesses, coaches, agencies, SaaS — and
+finds that collecting testimonials is a constant, low-yield chore.
+
+## How it works
+
+1. You create a request (which offer or service, plus any context) and send the customer a
+   link.
+2. They answer about six guided multiple-choice questions in roughly a minute.
+3. The model turns their selections into 4–5 testimonial drafts, each a different length and
+   emphasis.
+4. They get a main draft plus a set of **remix variations** to swap in, can edit the text
+   directly, and regenerate for more.
+5. They add their name and company, confirm consent, then send it to you or save it. The
+   finished testimonial lands in your collection, ready to paste onto a page or into an ad.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- It removes the single biggest reason testimonials don't happen — the blank page.
+  Tap-through instead of write-from-scratch turns a ~10% response rate into something much
+  higher, and the drafts are usable, not generic.
+- Pairs directly with the **Retention & Referral Opportunity Scanner** (No. 12): that flags
+  the happy clients worth asking; this makes the ask trivial.
+- The collected, cleared-for-use testimonials become a clean input for a sales-page or ads
+  workflow.
+
+## Build phases
+
+### Phase 1 — Single-request flow
+Editable question set (sensible defaults provided). Send one link; the customer taps
+through, gets 4–5 AI drafts, picks / edits / regenerates, and submits with name + consent.
+Results stored.
+
+### Phase 2 — Collection and reuse
+A "saved testimonials" dashboard — filter by offer, see the implied sentiment from the
+answers, copy or export, tag which are cleared for public use, plain-text or embeddable
+snippet export.
+
+### Phase 3 — Scale
+Bulk-send to a list with reminders, auto-request triggered after a milestone or straight
+from the Retention & Referral Scanner, and formatting variants (short pull-quote /
+long-form / one-line).
+
+## Stack and dependencies
+
+- A per-request public form (no login for the customer) + your side to build and send requests
+- Anthropic API for the drafts, with a fixed variation structure so the options differ
+  meaningfully (length, angle, tone)
+- Storage for requests, submissions, and consent; name/title capture; export / embed
+- Optional trigger integration with the Retention & Referral Opportunity Scanner
+- Could live inside Impact Intelligence or ship standalone
+
+## Open questions and risks
+
+- **Authenticity.** An AI-polished testimonial still has to be the customer's real opinion
+  and their explicit approval of the final wording — capture affirmative consent and let
+  them edit freely, or it's fabrication.
+- **Disclosure / FTC.** Testimonials must be genuine and approved by the customer; never
+  auto-publish without their sign-off.
+- **Sameness.** Five drafts that all sound alike defeats the purpose — the prompt needs
+  real variation driven by the answer set.
+- **Multiple-choice ceiling.** Pure tap-through can feel generic; one optional "anything in
+  your own words?" field lifts quality for little added friction.
+- **Gaming.** Nothing stops a business generating fake testimonials — tie each one to a
+  real request and recipient so it's at least not frictionless to publish unverified ones.
+
+<Prototype label="Questions → draft + remixes" caption="Sample — a few tapped answers, then a main draft with variations to swap in.">
+  <div class="mock">
+    <h4>Testimonial Generator</h4>
+    <p class="tagline">Reviewing: “90-Day Brand Sprint” · 6 quick questions, no typing</p>
+
+    <h5>A couple of the questions</h5>
+    <ul>
+      <li>Overall experience — <strong>Exceeded my expectations completely ✓</strong></li>
+      <li>Biggest benefit — <strong>Brought me new clients and opportunities ✓</strong></li>
+      <li>Customer service — <strong>Professional and knowledgeable ✓</strong></li>
+    </ul>
+
+    <h5>Your testimonial</h5>
+    <p>“My experience with the Brand Sprint was fantastic. Simply put, it exceeded my
+    expectations completely. The biggest benefit was that it helped me land new clients, and
+    the support was professional and knowledgeable. To anyone considering it, I'd say don't
+    wait as long as I did.”</p>
+
+    <h5>Remix — pick a variation to use instead</h5>
+    <ul>
+      <li>“Using the Brand Sprint was a game-changer. It exceeded my expectations completely and brought in real client opportunities…”</li>
+      <li>“I'm so glad I chose the Brand Sprint. It didn't just look good — it helped me get in front of the right people…”</li>
+      <li>“It delivered beyond what I expected. Ultimately it exceeded my expectations, and it was worth every penny.”</li>
+      <li><em>+ two more</em></li>
+    </ul>
+
+    <div class="row"><span>Your name</span><span>Robert Martinez</span></div>
+    <div class="row"><span>Company</span><span>Impact System Marketing</span></div>
+    <div class="btnrow"><span>Send testimonial</span><span>Save testimonial</span><span>Regenerate</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>
