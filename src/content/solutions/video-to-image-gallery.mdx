@@ -1,0 +1,120 @@
+---
+title: Video to Image Gallery
+number: 15
+one_liner: Drop in a video and get clean still frames back — one every few seconds or an even spread across the clip — to download or copy individually, with all the decoding happening in the browser tab.
+status: spark
+category: Operations & Admin
+tags: [utility, video, images, browser-tool, client-side, privacy]
+effort: S
+target_user: Anyone who needs stills out of a video — thumbnails, social images, product shots, docs — without uploading the file anywhere
+visibility: public
+created: 2026-08-31
+updated: 2026-08-31
+---
+
+import Prototype from '../../components/Prototype.astro';
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+Pulling still frames out of a video is more annoying than it should be: scrub frame by
+frame and screenshot, or upload the file to some site you'd rather not trust with the
+footage. There's no quick, private way to grab a clean set of stills from a clip.
+
+## What it does
+
+Drop in a video — any format the browser can play (MP4, MOV, WebM, M4V…) — and get a
+gallery of still frames back:
+
+- **Pick the frames**: one every N seconds, or an even spread of a set number across the
+  whole clip
+- **Set a range**: start and end seconds, or just use the whole video
+- **Choose the output**: PNG, JPEG, or WebP, and an optional max width to downscale
+- **Take what you want**: copy or download any single frame, or download the whole set
+
+Everything runs locally in the browser tab. The video is never uploaded — all the decoding
+happens on the user's machine.
+
+## Who it is for
+
+Content and marketing people making thumbnails and social images, support and docs writers
+pulling reference stills, and anyone privacy-conscious who won't put raw footage on a web
+service.
+
+## How it works
+
+1. Choose a video (drag-and-drop or file picker). It loads into a hidden `<video>` element
+   — no upload.
+2. Set the sampling rule (interval or count), the start/end range, the image format, and an
+   optional max width.
+3. On extract, the tool seeks the video to each timestamp, paints the current frame onto a
+   canvas, and encodes it to the chosen format and width.
+4. Frames fill a gallery. Hover any one to copy or download it; "Download all" bundles the
+   set.
+5. Nothing leaves the tab — no server round-trip at any point.
+
+<TeamOnly>
+
+## Why it is worth building
+
+- Small, genuinely useful, and it demonstrates the "runs entirely in your browser, your
+  file never leaves your machine" trust angle in a concrete way.
+- Cheap to build — it's `<video>` seeking plus canvas capture, with a small zip library for
+  the bulk download. Can ship as a single static page.
+- Good goodwill / top-of-funnel tool, and a natural first entry if ISM ever builds a small
+  "tools" library.
+
+## Build phases
+
+### Phase 1 — Core extract
+File input, interval-based extraction, a frame gallery, single-frame download. PNG only,
+full size. Entirely client-side.
+
+### Phase 2 — Options
+"Even spread of N frames" mode, start/end range, JPEG/WebP with a quality setting,
+max-width downscale, "Download all" as a zip, copy-to-clipboard on a frame.
+
+### Phase 3 — Polish
+Progress bar with a working Stop mid-run, drag-and-drop, remembers the last settings,
+handling for long clips (seek throttling, memory caps), optional skip of near-identical
+frames.
+
+## Stack and dependencies
+
+- Pure browser: `<video>` element + programmatic seeking + `<canvas>` `drawImage` +
+  `canvas.toBlob`
+- A small client-side zip writer for "Download all"; the Clipboard API for copy
+- Optional Web Worker for encoding so the UI stays responsive on long clips
+- No server, no backend — deployable as one static HTML/JS file
+
+## Open questions and risks
+
+- **Codec support varies.** Some MOV/HEVC files won't decode in every browser — needs a
+  clear "your browser can't play this file" message rather than a silent failure.
+- **Seek accuracy.** Browsers don't always land exactly on the requested timestamp; frames
+  can be a few milliseconds off. Fine for stills, worth noting.
+- **Long clips.** Many frames means real memory pressure — cap the count, stream to the
+  zip, and make Stop actually stop.
+- **It's a nice-to-have, not a growth driver.** Keep the scope small.
+
+<Prototype label="The tool" caption="Recreated from the reference — drop a video, set how frames are picked, extract.">
+  <div class="mock">
+    <h4>Video to Image Gallery</h4>
+    <p class="tagline">Drop in a video and get clean still frames back. The video never leaves your computer — all the decoding happens right here in the browser tab.</p>
+
+    <h5>Drop a video here or click to choose one</h5>
+    <p class="tagline">MP4, MOV, WebM, M4V and anything else your browser can play</p>
+
+    <h5>Settings</h5>
+    <div class="row"><span>How to pick frames</span><span>One frame every N seconds</span></div>
+    <div class="row"><span>Seconds between frames</span><span>2</span></div>
+    <div class="row"><span>Start at (seconds)</span><span>0</span></div>
+    <div class="row"><span>End at (seconds)</span><span>end of video</span></div>
+    <div class="row"><span>Image format</span><span>PNG (lossless)</span></div>
+    <div class="row"><span>Max width (px)</span><span>full size</span></div>
+
+    <div class="btnrow"><span>Extract frames</span><span>Stop</span><span>Download all</span><span>Clear</span></div>
+  </div>
+</Prototype>
+
+</TeamOnly>
