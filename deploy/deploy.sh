@@ -36,6 +36,12 @@ chown -R www-data:www-data "$PUBLIC_ROOT" "$TEAM_ROOT"
 echo "==> publish root landing page"
 install -m 0644 -o www-data -g www-data deploy/root-index.html "$LANDING"
 
+echo "==> publish Audience Signals sales page (/audience-signals/)"
+SALES_DIR="/var/www/ismorg.com/html/audience-signals"
+mkdir -p "$SALES_DIR"
+install -m 0644 -o www-data -g www-data deploy/audience-signals/index.html "$SALES_DIR/index.html"
+install -m 0644 -o www-data -g www-data deploy/audience-signals/logo.png "$SALES_DIR/logo.png"
+
 echo "==> vote service data dir"
 mkdir -p "$DATA_DIR"
 chown www-data:www-data "$DATA_DIR"
