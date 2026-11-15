@@ -23,6 +23,23 @@ export const STATUS_LABEL: Record<string, string> = {
   parked: 'Parked',
 };
 
+/**
+ * Catalog tabs, in the order an idea travels. Anything not building or live
+ * (spark, exploring, prototyping, parked) sits under "Ideas".
+ */
+export const TABS = [
+  { key: 'ideas', label: 'Ideas' },
+  { key: 'building', label: 'Building' },
+  { key: 'live', label: 'Live' },
+] as const;
+export type TabKey = (typeof TABS)[number]['key'];
+
+export function tabOf(status: string): TabKey {
+  if (status === 'live') return 'live';
+  if (status === 'building') return 'building';
+  return 'ideas';
+}
+
 /** Counts for the hero stat row. */
 export function statusTotals(items: Solution[]) {
   const t = { total: items.length, live: 0, building: 0, prototyping: 0, idea: 0 };

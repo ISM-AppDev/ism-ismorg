@@ -1,6 +1,6 @@
 ---
 import type { Solution } from '../lib/solutions';
-import { solutionHref } from '../lib/solutions';
+import { solutionHref, tabOf } from '../lib/solutions';
 import StatusBadge from './StatusBadge.astro';
 import VoteButton from './VoteButton.astro';
 
@@ -15,6 +15,7 @@ const num = String(data.number).padStart(2, '0');
   data-card
   data-category={data.category}
   data-status={data.status}
+  data-tab={tabOf(data.status)}
   data-slug={entry.slug}
   data-title={data.title}
   data-search={[data.title, data.one_liner, data.category, ...(data.tags ?? [])].join(' ').toLowerCase()}
@@ -33,8 +34,8 @@ const num = String(data.number).padStart(2, '0');
       <span class="pill pill--static">{data.category}</span>
       {data.effort && <span class="pill pill--static pill--ghost">{data.effort}</span>}
     </div>
-    {/* Voting is for ideas still being weighed; a shipped idea has nothing left to vote on. */}
-    {data.status !== 'live' && <VoteButton slug={entry.slug} variant="card" />}
+    {/* Voting is for ideas still being weighed. Once an idea is being built or is live, the decision is made. */}
+    {tabOf(data.status) === 'ideas' && <VoteButton slug={entry.slug} variant="card" />}
   </div>
 </article>
 

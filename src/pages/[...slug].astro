@@ -4,7 +4,7 @@ import MetaStrip from '../components/MetaStrip.astro';
 import StatusBadge from '../components/StatusBadge.astro';
 import VoteButton from '../components/VoteButton.astro';
 import Shots from '../components/Shots.astro';
-import { getSolutions, solutionHref } from '../lib/solutions';
+import { getSolutions, solutionHref, tabOf } from '../lib/solutions';
 
 export async function getStaticPaths() {
   const items = await getSolutions();
@@ -46,7 +46,7 @@ const hasLinks = Array.isArray(data.links) && data.links.length > 0;
           ))}
         </div>
       )}
-      {data.status !== 'live' && (
+      {tabOf(data.status) === 'ideas' && (
         <div class="idea__vote">
           <VoteButton slug={entry.slug} variant="detail" />
         </div>

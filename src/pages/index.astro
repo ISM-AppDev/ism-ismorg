@@ -1,11 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
 import SolutionCard from '../components/SolutionCard.astro';
-import { getSolutions, statusTotals } from '../lib/solutions';
+import { getSolutions, tabOf, TABS } from '../lib/solutions';
 import { CATEGORIES } from '../content/config';
 
 const items = await getSolutions();
-const totals = statusTotals(items);
+// how many ideas sit under each tab
+const tabCounts = Object.fromEntries(TABS.map((t) => [t.key, items.filter((i) => tabOf(i.data.status) === t.key).length]));
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // only show category pills that actually have ideas, in canonical order
@@ -17,12 +18,13 @@ const categories = CATEGORIES.filter((c) => present.has(c));
     <section class="section--tight container">
       <div class="hero__grid">
         <div class="hero__main">
-          <p class="t-label t-crimson hero__kicker">Vote on what we build next</p>
+          <p class="t-label t-crimson hero__kicker">From idea to live</p>
           <h1 class="t-display-2xl hero__title">Solution&nbsp;Ideas</h1>
           <p class="t-body-l hero__blurb">
-            A working catalog of applications Impact System Marketing could build — most of
-            them aimed at small-business owners. Each idea has a one-page brief: the problem,
-            how it works, and what it would take to build. Vote on the ones worth pursuing.
+            A working catalog of applications Impact System Marketing builds — most of
+            them aimed at small-business owners. Each one has a one-page brief: the problem,
+            how it works, and what it takes to build. See what's live, what's being built, and
+            vote on the ideas worth pursuing next.
           </p>
         </div>
 
@@ -33,13 +35,24 @@ const categories = CATEGORIES.filter((c) => present.has(c));
         </aside>
       </div>
 
-      <dl class="stats">
-        <div><dt class="t-display-l">{totals.total}</dt><dd class="t-label t-muted">ideas</dd></div>
-        <div><dt class="t-display-l">{totals.live}</dt><dd class="t-label t-muted">live</dd></div>
-        <div><dt class="t-display-l">{totals.building}</dt><dd class="t-label t-muted">building</dd></div>
-        <div><dt class="t-display-l">{totals.prototyping}</dt><dd class="t-label t-muted">prototyped</dd></div>
-        <div><dt class="t-display-l">{totals.idea}</dt><dd class="t-label t-muted">early</dd></div>
-      </dl>
+      <div class="tabs" role="tablist" aria-label="Ideas by stage" data-tabs>
+        {TABS.map((t) => (
+          <button
+            type="button"
+            class="tab"
+            role="tab"
+            id={`tab-${t.key}`}
+            data-tab-btn
+            data-tab={t.key}
+            aria-selected={t.key === 'ideas' ? 'true' : 'false'}
+            aria-controls="catalog-panel"
+            tabindex={t.key === 'ideas' ? 0 : -1}
+          >
+            <span class="tab__num t-display-l">{tabCounts[t.key]}</span>
+            <span class="tab__label t-label">{t.label}</span>
+          </button>
+        ))}
+      </div>
     </section>
   </div>
 
@@ -64,7 +77,7 @@ const categories = CATEGORIES.filter((c) => present.has(c));
 
     <p class="controls__count t-caption t-muted" data-count>{items.length} ideas</p>
 
-    <div class="grid" data-grid>
+    <div class="grid" data-grid id="catalog-panel" role="tabpanel" aria-live="polite">
       {items.map((entry) => <SolutionCard entry={entry} />)}
     </div>
 
@@ -95,10 +108,19 @@ const categories = CATEGORIES.filter((c) => present.has(c));
     .hero__cta-copy { margin: 8px 0 var(--ism-space-3); }
     .hero__cta .btn { width: 100%; }
 
-    .stats { display: flex; flex-wrap: wrap; gap: var(--ism-space-6); margin: 0; }
-    .stats div { display: flex; flex-direction: column; gap: 4px; }
-    .stats dt { margin: 0; }
-    .stats dd { margin: 0; }
+    /* the old stat row, now clickable: one tab per stage */
+    .tabs { display: flex; flex-wrap: wrap; gap: var(--ism-space-6); margin: 0; }
+    .tab {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+      padding: 0 0 10px;
+      background: none; border: 0; border-bottom: 4px solid transparent;
+      font: inherit; color: var(--ism-text); text-align: left; cursor: pointer;
+    }
+    .tab__label { color: var(--ism-charcoal-500); }
+    .tab:hover .tab__label { color: var(--ism-text); }
+    .tab[aria-selected='true'] { border-bottom-color: var(--ism-action); }
+    .tab[aria-selected='true'] .tab__num { color: var(--ism-action); }
+    .tab[aria-selected='true'] .tab__label { color: var(--ism-text); }
 
     .container-rule { max-width: var(--ism-maxw); margin-inline: auto; }
 
@@ -131,31 +153,59 @@ const categories = CATEGORIES.filter((c) => present.has(c));
 
   <script>
     const root = document.querySelector<HTMLElement>('[data-catalog]');
-    if (root) {
+    const tabsRoot = document.querySelector<HTMLElement>('[data-tabs]');
+    if (root && tabsRoot) {
       const grid = root.querySelector<HTMLElement>('[data-grid]')!;
       const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'));
       const filters = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+      const allFilter = filters.find((b) => (b.dataset.category ?? '') === '')!;
+      const tabBtns = Array.from(tabsRoot.querySelectorAll<HTMLButtonElement>('[data-tab-btn]'));
       const searchInput = root.querySelector<HTMLInputElement>('[data-search]')!;
       const sortBtn = root.querySelector<HTMLButtonElement>('[data-sort]')!;
       const sortLabel = root.querySelector<HTMLElement>('[data-sort-label]')!;
       const countEl = root.querySelector<HTMLElement>('[data-count]')!;
       const emptyEl = root.querySelector<HTMLElement>('[data-empty]')!;
 
+      const TAB_KEYS = tabBtns.map((b) => b.dataset.tab!);
       const catalogOrder = cards.slice();
+      let activeTab = 'ideas';
       let activeCategory = '';
       let query = '';
       let sortByVotes = false;
       let voteCounts: Record<string, number> = {};
-      // Live ideas have no vote button, so they never count toward "most votes".
+      // Only ideas still being weighed carry a vote, so only they count toward "most votes".
       const votesFor = (el: HTMLElement) =>
-        el.dataset.status === 'live' ? 0 : voteCounts[el.dataset.slug!] ?? 0;
+        el.dataset.tab === 'ideas' ? voteCounts[el.dataset.slug!] ?? 0 : 0;
+
+      const setActiveFilter = (btn: HTMLButtonElement) => {
+        activeCategory = btn.dataset.category ?? '';
+        filters.forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      };
 
       const apply = () => {
+        const inTab = cards.filter((c) => c.dataset.tab === activeTab);
+
+        // category pills: only the categories that have ideas in this tab
+        const cats = new Set(inTab.map((c) => c.dataset.category));
+        filters.forEach((b) => {
+          const c = b.dataset.category ?? '';
+          b.style.display = c === '' || cats.has(c) ? '' : 'none';
+        });
+        if (activeCategory && !cats.has(activeCategory)) setActiveFilter(allFilter);
+
+        // voting only exists on the Ideas tab
+        sortBtn.style.display = activeTab === 'ideas' ? '' : 'none';
+
         let visible = 0;
         for (const card of cards) {
+          const matchTab = card.dataset.tab === activeTab;
           const matchCat = !activeCategory || card.dataset.category === activeCategory;
           const matchQuery = !query || (card.dataset.search ?? '').includes(query);
-          const show = matchCat && matchQuery;
+          const show = matchTab && matchCat && matchQuery;
           // inline style beats the scoped `.card { display: flex }` rule —
           // relying on the [hidden] attribute here does not (Astro scopes the
           // override selector to this page's cid, not the card component's).
@@ -163,7 +213,16 @@ const categories = CATEGORIES.filter((c) => present.has(c));
           if (show) visible++;
         }
         countEl.textContent = `${visible} idea${visible === 1 ? '' : 's'}`;
+
         emptyEl.hidden = visible !== 0;
+        if (visible === 0) {
+          const elsewhere = query
+            ? cards.filter((c) => c.dataset.tab !== activeTab && (c.dataset.search ?? '').includes(query)).length
+            : 0;
+          emptyEl.textContent = elsewhere
+            ? `No matches in this tab. ${elsewhere} in the other tabs.`
+            : 'No ideas match that filter.';
+        }
       };
 
       const reorder = () => {
@@ -173,14 +232,40 @@ const categories = CATEGORIES.filter((c) => present.has(c));
         for (const card of ordered) grid.appendChild(card);
       };
 
+      const setTab = (key: string, updateHash: boolean) => {
+        if (!TAB_KEYS.includes(key)) key = 'ideas';
+        activeTab = key;
+        tabBtns.forEach((b) => {
+          const on = b.dataset.tab === key;
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+          b.tabIndex = on ? 0 : -1;
+        });
+        grid.setAttribute('aria-labelledby', `tab-${key}`);
+        if (updateHash) {
+          // keep the address shareable (#building, #live) without jumping the page
+          const url = key === 'ideas' ? location.pathname + location.search : `#${key}`;
+          history.replaceState(null, '', url);
+        }
+        apply();
+      };
+
+      const tabFromHash = () => location.hash.replace('#', '').toLowerCase();
+
+      tabBtns.forEach((btn, i) => {
+        btn.addEventListener('click', () => setTab(btn.dataset.tab!, true));
+        btn.addEventListener('keydown', (e) => {
+          if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+          e.preventDefault();
+          const next = tabBtns[(i + (e.key === 'ArrowRight' ? 1 : tabBtns.length - 1)) % tabBtns.length];
+          next.focus();
+          setTab(next.dataset.tab!, true);
+        });
+      });
+      window.addEventListener('hashchange', () => setTab(tabFromHash(), false));
+
       filters.forEach((btn) => {
         btn.addEventListener('click', () => {
-          activeCategory = btn.dataset.category ?? '';
-          filters.forEach((b) => {
-            const on = b === btn;
-            b.classList.toggle('is-active', on);
-            b.setAttribute('aria-pressed', on ? 'true' : 'false');
-          });
+          setActiveFilter(btn);
           apply();
         });
       });
@@ -204,7 +289,7 @@ const categories = CATEGORIES.filter((c) => present.has(c));
         reorder();
       });
 
-      apply();
+      setTab(tabFromHash(), false);
     }
   </script>
 </Base>
