@@ -33,7 +33,8 @@ const num = String(data.number).padStart(2, '0');
       <span class="pill pill--static">{data.category}</span>
       {data.effort && <span class="pill pill--static pill--ghost">{data.effort}</span>}
     </div>
-    <VoteButton slug={entry.slug} variant="card" />
+    {/* Voting is for ideas still being weighed; a shipped idea has nothing left to vote on. */}
+    {data.status !== 'live' && <VoteButton slug={entry.slug} variant="card" />}
   </div>
 </article>
 

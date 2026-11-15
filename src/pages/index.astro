@@ -146,6 +146,9 @@ const categories = CATEGORIES.filter((c) => present.has(c));
       let query = '';
       let sortByVotes = false;
       let voteCounts: Record<string, number> = {};
+      // Live ideas have no vote button, so they never count toward "most votes".
+      const votesFor = (el: HTMLElement) =>
+        el.dataset.status === 'live' ? 0 : voteCounts[el.dataset.slug!] ?? 0;
 
       const apply = () => {
         let visible = 0;
@@ -165,7 +168,7 @@ const categories = CATEGORIES.filter((c) => present.has(c));
 
       const reorder = () => {
         const ordered = sortByVotes
-          ? cards.slice().sort((a, b) => (voteCounts[b.dataset.slug!] ?? 0) - (voteCounts[a.dataset.slug!] ?? 0))
+          ? cards.slice().sort((a, b) => votesFor(b) - votesFor(a))
           : catalogOrder;
         for (const card of ordered) grid.appendChild(card);
       };

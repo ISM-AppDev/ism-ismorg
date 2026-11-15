@@ -1,0 +1,117 @@
+---
+title: Webinar-to-Content Engine
+number: 19
+one_liner: "Upload a Zoom recording or transcript and get back 10 to 15 social posts, a recap email, and a blog draft, in your voice, from a single file."
+status: spark
+category: Brand & Visibility
+tags: [content, webinars, zoom, repurposing, social-posts, email, blog, ai]
+effort: L
+target_user: Owners, coaches, and speakers who run webinars, trainings, and events but never get around to turning them into content
+visibility: public
+created: 2026-11-15
+updated: 2026-11-15
+---
+
+import TeamOnly from '../../components/TeamOnly.astro';
+
+## The problem
+
+"I don't have time to create content."
+
+You already did the hard part. You ran the webinar, gave the talk, or hosted the training,
+and an hour of your best thinking is sitting in a recording. Then it stays there. Turning it
+into posts, an email, and an article means re-watching it, picking out the good parts,
+writing in your own voice, and doing it again for every channel. Most people never start.
+
+## What it does
+
+Upload a Zoom recording, or just its transcript, and get back a full set of content from
+that one session:
+
+- **10 to 15 social posts**, each built around a different moment, in your voice
+- **A recap email** for the people who attended and the people who didn't
+- **A blog draft** that reads like an article, not a transcript
+
+Everything is drawn from what was actually said, with real quotes attributed to the right
+speaker, and nothing invented to fill space.
+
+## Who it is for
+
+Anyone who talks for a living and records it: coaches, consultants, speakers, event hosts,
+and teams that run regular webinars or trainings.
+
+## How it works
+
+1. **Upload the recording or transcript** straight from Zoom. No cleanup needed first.
+2. **It reads the whole session** and finds the strongest moments: the stories, the
+   frameworks, the memorable lines.
+3. **It drafts the set** using your stored voice, offers, and audience, so each piece sounds
+   like you and ends with the right next step.
+4. **You review and adjust**, then copy the pieces out or send them to scheduling.
+
+<TeamOnly>
+
+## Why it is worth building
+
+The honest challenge: anyone can paste a transcript into their own Claude account and ask
+for posts. The product only wins if it does what a chat window can't.
+
+1. **It takes the real input.** A recording can't be pasted into a chat. Raw Zoom
+   transcripts are also messy and long, and quality drops on a 90-minute session. The
+   product accepts the file as it comes and handles the rest.
+2. **It remembers who you are.** Voice, offers, audience, and calls to action are stored once
+   instead of re-explained in every prompt. This is the Business Intelligence Profile idea
+   from Impact Intelligence.
+3. **Every quote is real and traceable.** A chat tends to paraphrase and invent quotes. This
+   pulls verbatim lines with the speaker and timestamp, and flags anything that needs a
+   guest's permission.
+4. **It finds the best moments, not just a summary.** It picks the strongest moments and
+   gives the timestamps for cutting clips, which a chat can't do for video.
+5. **It finishes the job.** The posts are spread across a calendar and handed to scheduling
+   (see **Scheduled Posts**, No. 7), instead of leaving you a block of text to copy out.
+6. **One event, two outputs.** Pairs with **Chat Navigator** (No. 18). Chat Navigator reads
+   the event's chat and tells you who to follow up with. This reads the recording and tells
+   you what to publish. The chat also shows what the audience asked, which can guide which
+   moments become posts. Sold together it is a post-event kit: content for the audience and a
+   follow-up list for the people who attended.
+
+## Positioning
+
+Don't pitch it as "AI writes your posts." Pitch it as **one event in, a full post-event kit
+out.** The first is a commodity. The second is a workflow a chat window can't give you.
+
+## Build phases
+
+### Phase 1: Transcript to kit
+Upload a transcript. Get the social posts, recap email, and blog draft, matched to a stored
+voice and set of offers. This is the part that can also be done in a chat, so it needs the
+stored profile to earn its place.
+
+### Phase 2: Recording and moments
+Accept the Zoom recording, transcribe it, find the strongest moments, and attach verbatim
+quotes with speaker and timestamp.
+
+### Phase 3: Clips and scheduling
+Cut captioned clips from the best moments, and place the posts on a calendar for scheduling.
+Optionally take the event's chat file from Chat Navigator to shape the content around real
+audience questions.
+
+## Stack and dependencies
+
+- File upload for Zoom recordings and transcripts, with transcription for recordings
+- Anthropic API for moment-finding and drafting, with a stored profile for voice and offers
+- Video tooling for clips (Phase 3)
+- Optional hand-off to Scheduled Posts and to Chat Navigator
+
+## Open questions and risks
+
+- **Transcription cost and length.** Long recordings are expensive to transcribe and read.
+  Needs a credit or usage model and a sensible length limit.
+- **Guest and attendee permission.** Quoting a guest speaker or an attendee may need their
+  consent. The product should flag it rather than assume.
+- **Sameness.** Fifteen posts that all sound alike defeats the purpose. The drafts need real
+  variation in angle and format.
+- **Phase 1 is easy to copy.** The durable value is the profile, the timestamps, the clips,
+  and the scheduling, not the first draft.
+
+</TeamOnly>

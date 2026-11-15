@@ -46,9 +46,11 @@ const hasLinks = Array.isArray(data.links) && data.links.length > 0;
           ))}
         </div>
       )}
-      <div class="idea__vote">
-        <VoteButton slug={entry.slug} variant="detail" />
-      </div>
+      {data.status !== 'live' && (
+        <div class="idea__vote">
+          <VoteButton slug={entry.slug} variant="detail" />
+        </div>
+      )}
     </header>
 
     <div class:list={['idea__layout', { 'idea__layout--split': hasShots }]}>
