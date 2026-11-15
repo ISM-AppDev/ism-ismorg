@@ -24,6 +24,7 @@ const { Content } = await entry.render();
 const num = String(data.number).padStart(2, '0');
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const hasShots = Array.isArray(data.images) && data.images.length > 0;
+const hasLinks = Array.isArray(data.links) && data.links.length > 0;
 ---
 <Base title={data.title} description={data.one_liner} crumbs={[data.category, data.title]}>
   <article class="section--tight container">
@@ -36,6 +37,15 @@ const hasShots = Array.isArray(data.images) && data.images.length > 0;
       </div>
       <h1 class="t-display-l idea__title">{data.title}</h1>
       <p class="t-body-l t-muted idea__tagline">{data.one_liner}</p>
+      {hasLinks && (
+        <div class="idea__links">
+          {data.links.map((l, i) => (
+            <a class:list={['btn', { 'btn--ghost': i > 0 }]} href={l.url} target="_blank" rel="noopener">
+              {l.label} <span aria-hidden="true">&rarr;</span>
+            </a>
+          ))}
+        </div>
+      )}
       <div class="idea__vote">
         <VoteButton slug={entry.slug} variant="detail" />
       </div>
@@ -87,6 +97,10 @@ const hasShots = Array.isArray(data.images) && data.images.length > 0;
       margin-bottom: var(--ism-space-2);
     }
     .idea__tagline { margin: var(--ism-space-2) 0 0; max-width: 60ch; }
+    .idea__links {
+      display: flex; flex-wrap: wrap; gap: var(--ism-space-2);
+      margin-top: var(--ism-space-3);
+    }
     .idea__vote { margin-top: var(--ism-space-3); }
     .idea__body { margin-top: var(--ism-space-6); }
 

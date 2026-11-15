@@ -60,6 +60,19 @@ const solutions = defineCollection({
       .default([]),
     /** heading for the image rail; defaults to "First-pass app" */
     shots_label: z.string().optional(),
+    /**
+     * Live links for shipped ideas (status: live). Shown as buttons under the
+     * title on the detail page; the first is the primary button, the rest are
+     * outlined. Full https:// URLs.
+     */
+    links: z
+      .array(
+        z.object({
+          label: z.string(),
+          url: z.string().url(),
+        }),
+      )
+      .default([]),
   }),
 });
 
