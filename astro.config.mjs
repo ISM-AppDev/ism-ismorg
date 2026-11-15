@@ -17,6 +17,8 @@ export default defineConfig({
     // emit /solutions/foo/index.html so clean URLs work behind nginx
     format: 'directory',
   },
+  // the first working name; keep the old address pointing at the renamed idea
+  redirects: { '/webinar-to-content-engine': `${BASE}/post-session-content-engine` },
   integrations: [mdx()],
   // Until the catalog is made public it sits behind HTTP basic-auth and is
   // marked noindex in the <head>. No sitemap on purpose.

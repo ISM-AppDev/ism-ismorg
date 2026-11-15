@@ -1,7 +1,7 @@
 ---
-title: Webinar-to-Content Engine
+title: Post-Session Content Engine
 number: 19
-one_liner: "Upload a Zoom recording or transcript and get back 10 to 15 social posts, a recap email, and a blog draft, in your voice, from a single file."
+one_liner: "Turn any recorded session you led (webinar, workshop, training, coaching call, interview) into 10 to 15 social posts, a recap email, and a blog draft, in your voice."
 status: spark
 category: Brand & Visibility
 tags: [content, webinars, zoom, repurposing, social-posts, email, blog, ai]
@@ -18,8 +18,8 @@ import TeamOnly from '../../components/TeamOnly.astro';
 
 "I don't have time to create content."
 
-You already did the hard part. You ran the webinar, gave the talk, or hosted the training,
-and an hour of your best thinking is sitting in a recording. Then it stays there. Turning it
+You already did the hard part. You ran the webinar, taught the workshop, hosted the training,
+or sat down for the interview, and an hour of your best thinking is sitting in a recording. Then it stays there. Turning it
 into posts, an email, and an article means re-watching it, picking out the good parts,
 writing in your own voice, and doing it again for every channel. Most people never start.
 
@@ -37,8 +37,8 @@ speaker, and nothing invented to fill space.
 
 ## Who it is for
 
-Anyone who talks for a living and records it: coaches, consultants, speakers, event hosts,
-and teams that run regular webinars or trainings.
+Anyone who leads sessions and records them: coaches, consultants, speakers, podcast guests
+and hosts, and teams that run regular webinars, workshops, or trainings.
 
 ## How it works
 
@@ -69,16 +69,27 @@ for posts. The product only wins if it does what a chat window can't.
    gives the timestamps for cutting clips, which a chat can't do for video.
 5. **It finishes the job.** The posts are spread across a calendar and handed to scheduling
    (see **Scheduled Posts**, No. 7), instead of leaving you a block of text to copy out.
-6. **One event, two outputs.** Pairs with **Chat Navigator** (No. 18). Chat Navigator reads
-   the event's chat and tells you who to follow up with. This reads the recording and tells
-   you what to publish. The chat also shows what the audience asked, which can guide which
-   moments become posts. Sold together it is a post-event kit: content for the audience and a
-   follow-up list for the people who attended.
 
 ## Positioning
 
-Don't pitch it as "AI writes your posts." Pitch it as **one event in, a full post-event kit
+Don't pitch it as "AI writes your posts." Pitch it as **one session in, a full set of content
 out.** The first is a commodity. The second is a workflow a chat window can't give you.
+
+## Relationship to Presentation Strategist
+
+This is for sessions the person leads, which is the same presenter Presentation Strategist
+serves (it evaluates slide decks). The two fit as a before-and-after: Presentation Strategist
+improves the session, and this turns the session into content afterward. That makes it a
+natural upgrade or add-on to Presentation Strategist. It is not related to Chat Navigator,
+which serves people attending other people's events.
+
+## Pricing idea
+
+One-time purchase per session, rather than a subscription. Someone who presents occasionally
+pays for each recording they want turned into content, and it can be offered as an add-on to
+Presentation Strategist. Open questions: the price per session, a length limit per purchase
+(long recordings cost more to transcribe and read), and whether a regular presenter gets a
+bundle or a monthly plan.
 
 ## Build phases
 
@@ -93,15 +104,13 @@ quotes with speaker and timestamp.
 
 ### Phase 3: Clips and scheduling
 Cut captioned clips from the best moments, and place the posts on a calendar for scheduling.
-Optionally take the event's chat file from Chat Navigator to shape the content around real
-audience questions.
 
 ## Stack and dependencies
 
 - File upload for Zoom recordings and transcripts, with transcription for recordings
 - Anthropic API for moment-finding and drafting, with a stored profile for voice and offers
 - Video tooling for clips (Phase 3)
-- Optional hand-off to Scheduled Posts and to Chat Navigator
+- Optional hand-off to Scheduled Posts, and to Presentation Strategist as an add-on
 
 ## Open questions and risks
 
